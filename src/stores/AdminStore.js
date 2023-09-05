@@ -1,5 +1,5 @@
 import { defineStore } from "pinia"
-import { getOtherswitch } from "@/api/api"
+
 
 
 const STORE_NAME = "admin";
@@ -17,7 +17,7 @@ export const AdminStore = defineStore(STORE_NAME, {
             created_at: "",
             is_root: false,
             token: localStorage.getItem("token") || null,
-            globalOptions: JSON.parse(localStorage.getItem('globalOptions')) || null,
+            globalOptions:  localStorage.getItem("globalOptions") ? JSON.parse(localStorage.getItem("globalOptions")) : [],
         };
     },
     actions: {
@@ -38,7 +38,7 @@ export const AdminStore = defineStore(STORE_NAME, {
         },
         // 获取用户信息
         getAdminInfo() {
-            console.log('获取用户信息');
+            // console.log('获取用户信息');
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
             this.id = userInfo.id;
             this.username = userInfo.username;
@@ -49,13 +49,10 @@ export const AdminStore = defineStore(STORE_NAME, {
             this.is_root = userInfo.is_root;
         },
         // 获取全局配置
-        async getgloablOptions() {
-            console.log('获取全局配置');
-            const res = await getOtherswitch();
-            this.globalOptions = res.data;
-            // 存储全局配置到本地
-            localStorage.setItem('globalOptions', JSON.stringify(res.data));
-            res.data.find((item) => item.name === 'darkthem').value === 1 ? document.querySelector('html').classList.add('darklight') : '';
+        async getgloablOptions(optins) {
+            this.globalOptions = optins;
+            localStorage.setItem('globalOptions', JSON.stringify(optins));
+            optins.find((item) => item.name === 'darkthem').value === 1 ? document.querySelector('html').classList.add('darklight') : '';
         },
     },
     getters: {},

@@ -1,24 +1,21 @@
 <template>
-    <div class="footer">
-      <div class="footer-main">
-        <div class="footer-main-l">
-          <div class="footer-main-l-l">
-            <a href="javascript:;">Suxin ·</a>
-          </div>
-
-          <div style="color: #888888">
-            <p>© 2022 - 也许，将会是最好用的博客管理系统！</p>
-            <p>Perhaps, it will be the best blog management system!</p>
-          </div>
+  <div class="footer">
+    <div class="footer-main">
+      <div class="footer-main-l">
+        <div class="footer-main-l-l">
+          <a href="javascript:;">Suxin ·</a>
         </div>
-        <div class="footer-main-r">蜀ICP备2022022751号-1</div>
+        <div style="color: #888888">
+          <p>© 2022 - 也许，将会是最好用的博客管理系统！</p>
+          <p>Perhaps, it will be the best blog management system!</p>
+        </div>
       </div>
+      <div class="footer-main-r">蜀ICP备2022022751号-1</div>
     </div>
+  </div>
 </template>
 
-<script setup>
-
-</script>
+<script setup></script>
 
 <style lang="less" scoped>
 .footer {
@@ -56,17 +53,14 @@
   }
 }
 
-
 @media screen and (max-width: 1250px) {
-  .footer-main{
+  .footer-main {
     width: 90vw;
   }
-
 }
 
 @media screen and (max-width: 820px) {
-
-.footer {
+  .footer {
     width: 100%;
 
     &-main {
@@ -91,6 +85,4 @@
     }
   }
 }
-
-
 </style>

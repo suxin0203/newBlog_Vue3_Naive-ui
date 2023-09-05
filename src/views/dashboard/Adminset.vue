@@ -2,7 +2,8 @@
   <div>
     <n-card title="设置" style="margin-bottom: 16px">
       <n-tabs type="line" animated>
-        <n-tab-pane name="lunbotuchange" tab="轮播图设置">
+        <n-tab-pane name="systemset" tab="系统设置">
+          <span>轮播图设置：</span>
           <n-upload
             :action="axios.defaults.baseURL + '/upload/_token/lbt_upload'"
             :headers="{ token: token }"
@@ -14,9 +15,9 @@
           >
             点击上传
           </n-upload>
-        </n-tab-pane>
-        <n-tab-pane name="darkthemchange" tab="主题切换">
-          <div style="padding: 20px">
+          <hr />
+          <div style="margin: 50px 0">
+            <span>主题切换：</span>
             <n-switch
               :checked-value="1"
               :unchecked-value="0"
@@ -24,17 +25,16 @@
               @update:value="handleChange"
             />
           </div>
-        </n-tab-pane>
-        <n-tab-pane name="notice" tab="公告切换">
+          <hr />
           <div class="notice">
-            <span>标题开关：</span>
+            <span>标题展示开关：</span>
             <n-switch
               :checked-value="1"
               :unchecked-value="0"
               v-model:value="noticesopen"
             />
             <p style="margin: 20px"></p>
-            <span>副标题开关：</span>
+            <span>副标题展示开关：</span>
             <n-switch
               :checked-value="1"
               :unchecked-value="0"
@@ -56,10 +56,10 @@
               </n-form-item>
             </n-form>
             <n-button type="primary" @click="updateNotice">提交</n-button>
+            <!-- <button id="nitaibtn">提交</button> -->
           </div>
         </n-tab-pane>
-
-        <n-tab-pane name="question" tab="问卷系统">
+        <n-tab-pane name="question" tab="动态表单">
           <QuestionNaire />
         </n-tab-pane>
         <n-tab-pane name="d3jsdemo" tab="D3js练习">
@@ -123,8 +123,10 @@ onMounted(() => {
 const loadlbt = async () => {
   showimg.value = false;
   // let res = await axios.get("/lbt/imglist");
-  let lunbotu = adminStore.globalOptions.find((item) => item.name === "lunbotu");
-  
+  let lunbotu = adminStore.globalOptions.find(
+    (item) => item.name === "lunbotu"
+  );
+
   fileList.value = JSON.parse(lunbotu.content).map((item) => {
     return {
       id: item.newhref,
@@ -207,5 +209,20 @@ const updateNotice = () => {
   height: 100%;
   width: 100%;
   background: pink;
+}
+#nitaibtn {
+  color: #090909;
+  padding: 0.7em 1.7em;
+  font-size: 18px;
+  border-radius: 0.5em;
+  background: #e8e8e8;
+  border: 1px solid #e8e8e8;
+  transition: all 0.3s;
+  box-shadow: 6px 6px 12px #c5c5c5, -6px -6px 12px #ffffff;
+}
+
+#nitaibtn:active {
+  color: #666;
+  box-shadow: inset 4px 4px 12px #c5c5c5, inset -4px -4px 12px #ffffff;
 }
 </style>

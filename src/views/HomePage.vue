@@ -3,90 +3,14 @@
     <a href="#"> ⬆ </a>
   </div> -->
   <div class="lbt">
-    <div class="header" id="top" :class="{ header2: isActive }">
-      <div class="nav-new">
-        <div class="nav-new-l">
-          <div class="logo" @click="gohome">
-            <img src="@/assets/images/logo3.png" alt="" />
-          </div>
-          <div class="nav-new-l-menu">
-            <div class="nav-new-title" @click="gohome">
-              <a href="javascript:;" class="mune-css">首页</a>
-            </div>
-            <div class="nav-new-title">
-              <a class="mune-css">
-                <n-popselect
-                  v-model:value="selectedCategory"
-                  :options="categoryOptions"
-                  trigger="click"
-                  @update:value="searchCategory"
-                >
-                  <div>前端</div>
-                </n-popselect>
-              </a>
-            </div>
-            <div class="nav-new-title">
-              <a class="mune-css">
-                <n-popselect
-                  v-model:value="selectedCategory"
-                  :options="categoryOptions"
-                  trigger="click"
-                  @update:value="searchCategory"
-                >
-                  <div>后端</div>
-                </n-popselect>
-              </a>
-            </div>
-            <div class="nav-new-title" @click="dashboard">
-              <a class="mune-css">后台</a>
-            </div>
-          </div>
-        </div>
-        <div class="nav-new-r">
-          <div class="nav-new-r-search">
-            <n-input-group>
-              <n-input
-                v-model:value="pageInfo.keyword"
-                @keydown.enter="getArtiles(1)"
-                placeholder="请输入关键字"
-                class="nav-new-r-search-input"
-                style="background-color: rgba(255, 255, 255, 0.5)"
-              />
-              <n-button
-                type="primary"
-                @click="getArtiles(1)"
-                class="nav-new-r-search-button"
-              >
-                搜索
-              </n-button>
-            </n-input-group>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="carousel1">
-      <section style="background: #00b5d1">
-        <n-carousel autoplay draggable v-if="lunbotu.value">
-          <img
-            class="carousel-img"
-            :src="item.newhref"
-            v-for="item in JSON.parse(lunbotu.content)"
-            :key="item.id"
-          />
-        </n-carousel>
-        <div class="title-h1">
-          <h1 v-if="notice.value">{{ notice.content }}</h1>
-          <p class="title-h1-page" v-if="noticecontent.value">
-            {{ noticecontent.content }}
-          </p>
-        </div>
-        <div class="wave wave1"></div>
-        <div class="wave wave2"></div>
-        <div class="wave wave3"></div>
-        <div class="wave wave4"></div>
-      </section>
-    </div>
-
+    <MyHeaderVue
+      :options="categoryOptions"
+      @updateKeyword="searchKeyword"
+      @updateCategory="searchCategory"
+      v-model:keyword="pageInfo.keyword"
+      v-model:category_id="pageInfo.category_id"
+    />
+    <MyCarouselVue />
     <div class="main">
       <n-divider />
       <!--头部↑-->
@@ -111,14 +35,20 @@
                 hoverable
                 @click="toDetail(blog)"
               >
-                <span>{{ blog.content }}</span>
+                <!-- <span>{{ blog.content }}</span> -->
+                <!-- <pre>
+                  {{ blog.content }}
+                </pre> -->
+                <code>
+                  {{ blog.content }}
+                </code>
                 <template #footer>
                   <span class="create-time">
                     {{
                       categoryOptions.find(
                         (item) => item.value === blog.category_id
                       ).label
-                    }}/👍999点赞 /👁999阅读</span
+                    }}</span
                   >
                   <span style="float: right"> ⏱{{ blog.created_at }} </span>
                 </template>
@@ -144,11 +74,7 @@
                   </n-space>
                 </div>
                 <div class="myavatar" v-else>
-                  <n-avatar
-                    round
-                    :size="60"
-                    src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
-                  />
+                  <n-avatar round :size="60" :src="adminStore.avatar_url" />
                   <p>
                     {{
                       adminStore.nickname
@@ -225,20 +151,6 @@
         show-quick-jumper
         show-size-picker
       />
-
-      <!-- <n-pagination
-        @update:page="getArtiles(page)"
-        @update:page-size="getArtiles(pageSize)"
-        v-model:page="pageInfo.page"
-        v-model:page-size="pageInfo.pageSize"
-        :page-count="pageInfo.totalPages"
-        :page-sizes="[5, 10, 20, 50]"
-        show-quick-jumper
-        show-size-picker
-        class="fenye"
-      /> -->
-
-      <!--分页组件-->
       <n-divider />
     </div>
 
@@ -248,48 +160,38 @@
 
 <script setup>
 import { reactive, ref, inject, onMounted, computed } from "vue";
-
 import { router, routes } from "@/common/router.js";
-
 import MyFooterVue from "@/components/MyFooter.vue";
+import MyHeaderVue from "@/components/MyHeader.vue";
+import MyCarouselVue from "@/components/MyCarousel.vue";
 import { AdminStore } from "@/stores/AdminStore";
 import { getCategoryList, getArticleList, getOtherswitch } from "@/api/api";
 
 const adminStore = AdminStore();
-// const axios = inject("axios");
-// const message = inject("message");
-// const dialog = inject("dialog");
-
-const selectedCategory = ref(0);
 const categoryOptions = ref([]); //分类列表
-
 const blogListInfo = ref([]);
-const isActive = ref(false);
-const fileList = ref([]);
 const show = ref(true);
 
-const seting = adminStore.globalOptions;
-const notice = seting.find((item) => item.name === "notice");
-const noticecontent = seting.find((item) => item.name === "noticecontent");
-const lunbotu = seting.find((item) => item.name === "lunbotu");
-
-onMounted(async() => {
+onMounted(async () => {
   await getCategories();
-  await getArtiles();
-  // loadlbt();
+  getArtiles();
 });
 
-const loadlbt = async () => {
-  let res = await axios.get("/lbt/imglist");
+const gohome = () => {
+  router.push("/"); //跳转到首页
+};
 
-  fileList.value = res.data.data.map((item) => {
-    return {
-      id: item.id,
-      name: item.url,
-      status: "finished",
-      url: item.href,
-    };
-  });
+const toMsg = () => {
+  router.push("/sendmsg"); //跳转到留言页面
+};
+
+const tologin = () => {
+  router.push("/login"); //跳转到登录页面
+};
+const logout = () => {
+  // delToken
+  adminStore.delToken();
+  console.log("退出登录");
 };
 
 // 获取全部分类
@@ -307,25 +209,9 @@ const getCategories = async () => {
   });
 };
 
-const gohome = () => {
-  router.push("/"); //跳转到首页
-};
-
-const toMsg = () => {
-  router.push("/sendmsg"); //跳转到留言页面
-};
-
-const dashboard = () => {
-  router.push("/dashboard/article"); //跳转到管理页面
-};
-
-const tologin = () => {
-  router.push("/login"); //跳转到登录页面
-};
-const logout = () => {
-  // delToken
-  adminStore.delToken();
-  console.log("退出登录");
+//跳转到详情页
+const toDetail = (blog) => {
+  router.push({ path: "/detail", query: { id: blog.id } });
 };
 
 const changePageSize = (pageSize) => {
@@ -357,27 +243,20 @@ const getArtiles = async (page) => {
   show.value = false;
 };
 
-//跳转到详情页
-const toDetail = (blog) => {
-  router.push({ path: "/detail", query: { id: blog.id } });
-};
-
 //搜索分类
 const searchCategory = (category_id) => {
+  // console.log(category_id);
   category_id === 0
     ? delete pageInfo.category_id
     : (pageInfo.category_id = category_id);
   getArtiles(1); //搜索默认第一页
 };
 
-onMounted(() => {
-  // 监听滚动条位置
-  window.addEventListener("scroll", getScrollPosition, false);
-});
-// 滚动条距顶部距离
-const getScrollPosition = () => {
-  let top = document.documentElement.scrollTop || document.body.scrollTop;
-  isActive.value = top > 50;
+// 搜索关键词
+const searchKeyword = (keyword) => {
+  // console.log(keyword);
+  pageInfo.keyword = keyword;
+  getArtiles(1); //搜索默认第一页
 };
 </script>
 
@@ -581,65 +460,6 @@ const getScrollPosition = () => {
 .create-time {
   font-size: 14px;
   color: gray;
-}
-
-section {
-  position: relative;
-  width: 100%;
-  height: 500px;
-  background: #fff;
-  overflow: hidden;
-}
-.title-h1 {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  font-size: 24px;
-  color: #cbcbcb;
-  font-weight: bold;
-  text-align: center;
-}
-section .wave {
-  width: 100%;
-  height: 100px;
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  background: url("@/assets/images/wave.png");
-  background-size: 1000px 100px;
-}
-
-section .wave.wave1 {
-  animation: animate1 20s linear infinite;
-  z-index: 10;
-  opacity: 1;
-  animation-delay: 0s;
-  bottom: 0;
-}
-
-section .wave.wave2 {
-  animation: animate2 15s linear infinite;
-  z-index: 9;
-  opacity: 0.5;
-  animation-delay: -5s;
-  bottom: 10px;
-}
-
-section .wave.wave3 {
-  animation: animate1 10s linear infinite;
-  z-index: 8;
-  opacity: 0.2;
-  animation-delay: -7s;
-  bottom: 15px;
-}
-
-section .wave.wave4 {
-  animation: animate2 2s linear infinite;
-  z-index: 7;
-  opacity: 0.71;
-  animation-delay: -5s;
-  bottom: 20px;
 }
 
 @keyframes animate1 {
