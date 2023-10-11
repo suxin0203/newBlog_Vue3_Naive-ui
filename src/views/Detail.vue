@@ -1,73 +1,29 @@
 <template>
   <div class="lbt">
-    <div class="header" id="top">
-      <div class="nav-new">
-        <div class="nav-new-l">
-          <div class="logo" @click="gohome">
-            <img src="../assets/images/logo3.png" alt="" />
-          </div>
-          <div class="nav-new-l-menu">
-            <div class="nav-new-title">
-              <a href="javascript:;" @click="gohome">首页</a>
-            </div>
-            <div class="nav-new-title">
-              <a>
-                <n-popselect
-                  v-model:value="selectedCategory"
-                  :options="categoryOptions"
-                  trigger="click"
-
-                >
-                  <div>前端</div>
-                </n-popselect>
-              </a>
-            </div>
-            <div class="nav-new-title">
-              <a>
-                <n-popselect
-                  v-model:value="selectedCategory"
-                  :options="categoryOptions"
-                  trigger="click"
-
-                >
-                  <div>后端</div>
-                </n-popselect>
-              </a>
-            </div>
-
-            <!-- <div class="nav-new-title" @click="dashboard">
-              <a>后台</a>
-            </div> -->
-            <div class="nav-new-title">
-              <a href="" @click="goback" class="goback"> 返回 </a>
-            </div>
-          </div>
-        </div>
-        <div class="nav-new-r">
-          <div class="nav-new-r-search">
-            <n-input-group>
-              <n-input
-                v-model:value="pageInfo.keyword"
-                placeholder="请输入关键字"
-                class="nav-new-r-search-input"
-              />
-              <n-button type="primary" ghost class="nav-new-r-search-button">
-                搜索
-              </n-button>
-            </n-input-group>
-          </div>
-        </div>
-      </div>
-    </div>
+    <MyHeaderVue
+      :options="categoryOptions"
+      @updateKeyword="searchKeyword"
+      @updateCategory="searchCategory"
+      v-model:keyword="pageInfo.keyword"
+      v-model:category_id="pageInfo.category_id"
+      style="
+        background: rgba(24, 160, 88, 0.3);
+        backdrop-filter: saturate(50%) blur(4px);
+      "
+    />
 
     <div class="main">
-      <n-divider />
+      <div style="overflow: hidden">
+        <n-divider />
+      </div>
 
       <!--头部↑-->
       <div class="main-body">
         <div class="main-body-l">
           <n-card id="main-page">
-            <h1>{{ blogInfo.title }} </h1><span>{{ blogInfo.category_name }}</span>---------<span>{{ blogInfo.created_at }}</span>
+            <h1>{{ blogInfo.title }}</h1>
+            <span>{{ blogInfo.category_name }}</span
+            >---------<span>{{ blogInfo.created_at }}</span>
             <hr />
             <div>
               <div
@@ -167,10 +123,10 @@
 
 <script setup>
 import { reactive, ref, inject, onMounted, computed } from "vue";
-import {router , routes} from "@/common/router.js";
+import { router, routes } from "@/common/router.js";
 import MyFooterVue from "@/components/MyFooter.vue";
-import {getArticleDetail, getCategoryList} from "@/api/api";
-
+import { getArticleDetail, getCategoryList } from "@/api/api";
+import MyHeaderVue from "@/components/MyHeader.vue";
 
 const blogInfo = ref({});
 const selectedCategory = ref(0);
@@ -190,22 +146,17 @@ const pageInfo = reactive({
 onMounted(() => {
   getArticleById();
   getCategories();
-  
 });
-
 
 const getArticleById = async () => {
   getArticleDetail(router.currentRoute.value.query.id).then((res) => {
-    blogInfo.value = res.data[0]
+    blogInfo.value = res.data[0];
   });
-
-
 };
 
 const goback = () => {
   router.push("/");
 };
-
 
 // 获取全部分类
 const getCategories = async () => {
@@ -222,7 +173,6 @@ const getCategories = async () => {
   });
 };
 
-
 const gohome = () => {
   router.push("/"); //跳转到首页
 };
@@ -231,7 +181,36 @@ const dashboard = () => {
   router.push("/login"); //跳转到登录页
 };
 
+//搜索分类
+const searchCategory = (category_id) => {
+  // // console.log(category_id);
+  // category_id === 0
+  //   ? delete pageInfo.category_id
+  //   : (pageInfo.category_id = category_id);
+  // getArtiles(1); //搜索默认第一页
+    // 跳转到文章列表页
+  router.push({
+    path: "/articles",
+    query: {
+      keyword: keyword,
+    },
+  });
+};
 
+// 搜索关键词
+const searchKeyword = (keyword) => {
+  // console.log(keyword);
+  // pageInfo.keyword = keyword;
+  // getArtiles(1); //搜索默认第一页
+
+  // 跳转到文章列表页
+  router.push({
+    path: "/articles",
+    query: {
+      keyword: keyword,
+    },
+  });
+};
 </script>
 
 <style lang="less" scoped>
@@ -254,6 +233,7 @@ const dashboard = () => {
 .main {
   width: 1200px;
   margin: 0 auto;
+  min-height: calc(100vh - 170px);
   // background-color: pink;
   &-body {
     display: flex;

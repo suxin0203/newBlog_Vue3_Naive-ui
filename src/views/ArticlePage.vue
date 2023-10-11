@@ -1,68 +1,57 @@
 <template>
-  <div class="lbt">
+  <div class="blog">
     <MyHeaderVue
-      :setstyle="true"
+      :setstyle="false"
       :options="categoryOptions"
       @updateKeyword="searchKeyword"
       @updateCategory="searchCategory"
       v-model:keyword="pageInfo.keyword"
       v-model:category_id="pageInfo.category_id"
+      style="
+        background: rgba(24, 160, 88, 0.3);
+        backdrop-filter: saturate(50%) blur(4px);
+      "
     />
-    <MyCarouselVue />
     <div class="main">
-      <n-divider />
+      <div style="overflow: hidden">
+        <n-divider />
+      </div>
+
       <!--头部↑-->
       <div class="main-body">
         <div class="main-body-l">
-          <div class="card" @click="toMsg()">
-            <div class="bg">
-              <span @click="toMsg()">点此留言版</span>
-              <span>🤡广告位招租...🤡</span>
-            </div>
-            <div class="blob"></div>
-          </div>
-          <div v-if="show">
-            <n-card v-for="i of 5" :key="i" style="margin-top: 20px">
-              <n-skeleton :width="180" :sharp="false" size="medium" />
-              <div style="margin: 10px 0">
-                <n-skeleton text :repeat="1" />
-                <n-skeleton text style="width: 60%" />
-              </div>
-              <n-space justify="space-between">
-                <n-skeleton :width="40" :sharp="false" size="mini" />
-                <n-skeleton :width="120" :sharp="false" size="mini" />
-              </n-space>
-            </n-card>
-          </div>
-          <div v-else>
-            <n-card
-              content-style="color: #888888"
-              hoverable
+          <n-spin :show="show">
+            <div
               v-for="blog in blogListInfo"
               :key="blog.id"
-              :title="blog.title"
               class="main-body-l-item"
-              @click="toDetail(blog)"
             >
-              <!-- <span>{{ blog.content }}</span> -->
-              <!-- <pre>
+              <n-card
+                content-style="color: #888888"
+                :title="blog.title"
+                hoverable
+                @click="toDetail(blog)"
+              >
+                <!-- <span>{{ blog.content }}</span> -->
+                <!-- <pre>
                   {{ blog.content }}
                 </pre> -->
-              <code>
-                {{ blog.content }}
-              </code>
-              <template #footer>
-                <span class="create-time">
-                  {{
-                    categoryOptions.find(
-                      (item) => item.value === blog.category_id
-                    ).label
-                  }}</span
-                >
-                <span style="float: right"> ⏱{{ blog.created_at }} </span>
-              </template>
-            </n-card>
-          </div>
+                <code>
+                  {{ blog.content }}
+                </code>
+                <template #footer>
+                  <span class="create-time">
+                    {{
+                      categoryOptions.find(
+                        (item) => item.value === blog.category_id
+                      ).label
+                    }}</span
+                  >
+                  <span style="float: right"> ⏱{{ blog.created_at }} </span>
+                </template>
+              </n-card>
+            </div>
+          </n-spin>
         </div>
 
         <div class="main-body-r">
@@ -153,7 +142,7 @@
         v-model:page="pageInfo.page"
         @update:page="getArtiles()"
         v-model:page-count="pageInfo.totalPages"
-        :page-sizes="[10, 20, 50, 5]"
+        :page-sizes="[5, 10, 20, 50]"
         @update:page-size="changePageSize"
         show-quick-jumper
         show-size-picker
@@ -228,7 +217,7 @@ const changePageSize = (pageSize) => {
 
 const pageInfo = reactive({
   page: 1, //当前页码
-  pageSize: 10, //每页显示条数
+  pageSize: 5, //每页显示条数
   totalPages: 1, //总页数
   count: 0, //总条数
   keyword: "", //搜索关键字
@@ -237,7 +226,6 @@ const pageInfo = reactive({
 
 // 获取博客列表
 const getArtiles = async (page) => {
-  show.value = true;
   // 分页 搜索 分类 默认第一页
   if (page === 1) {
     pageInfo.page = page;
@@ -247,8 +235,8 @@ const getArtiles = async (page) => {
     blogListInfo.value = res.data;
     pageInfo.totalPages = res.pagination.totalPages;
     pageInfo.count = res.pagination.total;
-    show.value = false;
   });
+  show.value = false;
 };
 
 //搜索分类
@@ -275,15 +263,16 @@ const searchKeyword = (keyword) => {
     color: gray !important;
   }
 }
-.lbt {
+.blog {
   position: relative;
   width: 100%;
   height: 100%;
-  background: linear-gradient(#ffffff 30%, #eee 40%);
+  background: linear-gradient(#ffffff 33%, #eee 66%);
 }
 .main {
   width: 1200px;
   margin: 0 auto;
+  min-height: calc(100vh - 170px);
   // background-color: pink;
   &-body {
     display: flex;
@@ -361,7 +350,7 @@ const searchKeyword = (keyword) => {
         }
       }
       flex: 1;
-      &-item {
+      &-item:nth-child(n + 2) {
         margin-top: 20px;
         cursor: pointer;
       }
@@ -529,7 +518,7 @@ const searchKeyword = (keyword) => {
     justify-content: center;
     margin-top: 10px;
   }
-  .lbt {
+  .blog {
     width: 100vw;
   }
   .header {

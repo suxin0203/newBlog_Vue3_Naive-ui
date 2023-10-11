@@ -1,5 +1,9 @@
 <template>
-  <div class="header" id="top" :class="{ headercolor: isActive }">
+  <div
+    class="header"
+    id="top"
+    :class="{ headercolor: isActive, headermohu: isMohu }"
+  >
     <div class="nav-new">
       <div class="nav-new-l">
         <div class="logo" @click="toHome">
@@ -56,7 +60,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, defineProps, defineEmits, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { router, routes } from "@/common/router.js";
 
 const props = defineProps({
@@ -72,6 +76,10 @@ const props = defineProps({
     type: Number,
     default: 0,
   },
+  setstyle: {
+    type: Boolean,
+    required: false,
+  },
 });
 
 const emit = defineEmits([
@@ -81,16 +89,34 @@ const emit = defineEmits([
   "updateCategory",
 ]);
 const isActive = ref(false);
+const isMohu = ref(false);
 
-computed(() => {});
+const getScrollPosition = () => {
+  let top = document.documentElement.scrollTop || document.body.scrollTop;
+  isActive.value = top > 50;
+  isMohu.value = top > 450;
+  isActive.value = isActive.value && !isMohu.value;
+};
+
+const setupScrollListener = () => {
+  window.addEventListener("scroll", getScrollPosition, false);
+};
+
+watch(
+  () => props.setstyle,
+  (newValue) => {
+    newValue ? setupScrollListener() : "";
+  },
+  { immediate: true }
+);
 
 const search = () => {
   getArtiles(1);
 };
 
-onMounted(() => {
-  setupScrollListener();
-});
+// onMounted(() => {
+//   setupScrollListener();
+// });
 
 //搜索分类
 const searchCategory = (category_id) => {
@@ -98,7 +124,10 @@ const searchCategory = (category_id) => {
 };
 
 const toAboutMe = (blog) => {
-  router.push("/aboutme"); //跳转到关于我
+  // router.push("/aboutme"); //跳转到关于我
+  // 新标签的打开suxin0203的github
+  window.open("https://github.com/suxin0203");
+  
 };
 
 const toMessage = (blog) => {
@@ -110,15 +139,7 @@ const toHome = (blog) => {
 };
 
 const toArticle = (blog) => {
-  router.push("/article"); //跳转到首页
-};
-
-const setupScrollListener = () => {
-  window.addEventListener("scroll", getScrollPosition, false);
-};
-const getScrollPosition = () => {
-  let top = document.documentElement.scrollTop || document.body.scrollTop;
-  isActive.value = top > 50;
+  router.push("/articles"); //跳转到首页
 };
 </script>
 
@@ -129,13 +150,19 @@ const getScrollPosition = () => {
   width: 100%;
   box-shadow: 0.5px 0.5px 5px #888888;
   z-index: 99;
-  // background-image: radial-gradient(transparent 1px, #fff 4px);
-  // background-size: 8px 8px;
-  // backdrop-filter: saturate(50%) blur(4px);
-  // background-color: rgba(255, 255, 255, 0.8);
 }
 .headercolor {
   background-color: #fff;
+  a {
+    color: gray !important;
+  }
+}
+
+.headermohu {
+  // background-color: #fff;
+  background-image: radial-gradient(transparent 1px, #ffffff 1px);
+  background-size: 4px 4px;
+  backdrop-filter: saturate(50%) blur(4px);
   a {
     color: gray !important;
   }

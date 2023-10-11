@@ -25,8 +25,7 @@ import {
   shallowRef,
   onMounted,
   reactive,
-  inject,
-  defineProps,
+  inject
 } from "vue";
 import { Editor, Toolbar } from "@wangeditor/editor-for-vue";
 

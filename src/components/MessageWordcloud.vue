@@ -76,7 +76,7 @@ const option = {
 watch(
   () => props.msgList,
   (newVal, oldVal) => {
-    console.log("watch", newVal);
+    // console.log("watch", newVal);
     worddata.value = newVal;
     myEcharts.setOption({ series: [{ data: worddata.value }] });
   }

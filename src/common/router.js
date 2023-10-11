@@ -3,6 +3,7 @@ import { AdminStore } from "../stores/AdminStore";
 
 let routes = [
   { path: "/", name: "home", component: () => import("@/views/HomePage.vue") },
+  { path: "/articles", name: "articles", component: () => import("@/views/ArticlePage.vue") },
   {
     path: "/sendmsg",
     name: "sendmsg",

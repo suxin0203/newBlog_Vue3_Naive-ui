@@ -7,7 +7,6 @@ import {
   ref,
   onMounted,
   watch,
-  defineProps,
   onUnmounted,
 } from "vue";
 import * as echarts from "echarts";
