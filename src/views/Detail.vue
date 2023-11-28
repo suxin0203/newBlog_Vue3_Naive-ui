@@ -22,8 +22,14 @@
         <div class="main-body-l">
           <n-card id="main-page">
             <h1>{{ blogInfo.title }}</h1>
-            <span>{{ blogInfo.category_name }}</span
-            >---------<span>{{ blogInfo.created_at }}</span>
+              <n-space justify="space-between">
+            <n-tag :bordered="false" type="success">
+              {{ blogInfo.category_name }}
+            </n-tag>
+            <n-tag :bordered="false">
+              {{ blogInfo.created_at }}
+            </n-tag>
+            </n-space>
             <hr />
             <div>
               <div
@@ -40,20 +46,18 @@
           <div class="stk">
             <n-space vertical>
               <n-card hoverable>
-                <div class="myavatar">
+                <div class="myavatar" >
                   <n-avatar
                     round
-                    :size="60"
-                    src="https://gw.alipayobjects.com/zos/antfincdn/aPkFc8Sj7n/method-draw-image.svg"
+                    size="60"
+                    class="animationClass"
+                    :src="adminStore.avatar_url ||'https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474'"
+                    @click="gouser"
                   />
-                  <p>也许，将会是最好用的简约博客</p>
+                  <p>{{adminStore.nickname ||adminStore.username || "小苏的个人闲聊站" }} {{ adminStore.is_root ? "👑" : "" }}</p>
                   <n-space>
-                    <n-button type="primary" @click="dashboard">
-                      登录
-                    </n-button>
-                    <n-button type="primary" @click="dashboard">
-                      注册
-                    </n-button>
+                    <n-button type="primary" @click="gouser" v-if="!adminStore.token">登录</n-button>
+                    <n-button type="primary" @click="logout" v-if="adminStore.token">注销</n-button>
                   </n-space>
                 </div>
               </n-card>
@@ -127,7 +131,9 @@ import { router, routes } from "@/common/router.js";
 import MyFooterVue from "@/components/MyFooter.vue";
 import { getArticleDetail, getCategoryList } from "@/api/api";
 import MyHeaderVue from "@/components/MyHeader.vue";
+import { AdminStore } from "@/stores/AdminStore";
 
+const adminStore = AdminStore();
 const blogInfo = ref({});
 const selectedCategory = ref(0);
 const categoryOptions = ref([]); //分类列表
@@ -177,6 +183,17 @@ const gohome = () => {
   router.push("/"); //跳转到首页
 };
 
+//跳转到/dashboard/user
+const gouser = () => {
+  adminStore.token?router.push("/dashboard/user"):router.push("/login");
+};
+
+const logout = () => {
+  // delToken
+  adminStore.delToken();
+  console.log("退出登录");
+};
+
 const dashboard = () => {
   router.push("/login"); //跳转到登录页
 };
@@ -188,7 +205,7 @@ const searchCategory = (category_id) => {
   //   ? delete pageInfo.category_id
   //   : (pageInfo.category_id = category_id);
   // getArtiles(1); //搜索默认第一页
-    // 跳转到文章列表页
+  // 跳转到文章列表页
   router.push({
     path: "/articles",
     query: {

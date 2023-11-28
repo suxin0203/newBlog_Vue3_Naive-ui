@@ -42,7 +42,7 @@
                     </span>
                   </div>
                   <div>
-                    <n-icon size="28" :component="AddCircleOutline" />
+                    <n-icon size="28" :component="AddCircleOutline" @click="addArticle"/>
                     <n-divider vertical />
                     <n-button
                       strong
@@ -269,6 +269,10 @@ const toLogout = (url) => {
   //清理token
   adminStore.delToken();
   message.info("退出成功");
+};
+
+const addArticle = () => {
+  router.push("/dashboard/article");
 };
 </script>
 

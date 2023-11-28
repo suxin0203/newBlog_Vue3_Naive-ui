@@ -5,8 +5,8 @@
         <n-tab-pane name="systemset" tab="系统设置">
           <span>轮播图设置：</span>
           <n-upload
-            :action="axios.defaults.baseURL + '/upload/_token/lbt_upload'"
-            :headers="{ token: token }"
+            :action="axios.defaults.baseURL + '/upload/token/lbt_upload'"
+            :headers="{ Authorization: 'Bearer ' + token }"
             @finish="handleFinish"
             @remove="handleRemove"
             :default-file-list="fileList"
@@ -78,7 +78,7 @@ import ZhuD3 from "@/components/ZhuD3.vue";
 import QuestionNaire from "@/components/QuestionNaire.vue";
 import { useMessage, useDialog } from "naive-ui";
 import { AdminStore } from "@/stores/AdminStore";
-import { updateOtherswitch } from "@/api/api";
+import { updateOtherswitch,getSwiperList,deleteSwiperById } from "@/api/api";
 import globalThrottle from "@/common/utils";
 
 const adminStore = AdminStore();
@@ -122,22 +122,24 @@ onMounted(() => {
 
 const loadlbt = async () => {
   showimg.value = false;
-  // let res = await axios.get("/lbt/imglist");
-  let lunbotu = adminStore.globalOptions.find(
-    (item) => item.name === "lunbotu"
-  );
+  // let lunbotu = adminStore.globalOptions.find(
+  //   (item) => item.name === "lunbotu"
+  // );
+  // fileList.value = JSON.parse(lunbotu.content).map((item) => {
+  //   return {
+  //     id: item.newhref,
+  //     name: item.newhref,
+  //     status: "finished",
+  //     url: item.newhref,
+  //   };
+  // });
 
-  fileList.value = JSON.parse(lunbotu.content).map((item) => {
-    return {
-      id: item.newhref,
-      name: item.newhref,
-      status: "finished",
-      url: item.newhref,
-    };
-  });
+      // 新的轮播图
+  const SwiperList = await getSwiperList();
+  fileList.value = SwiperList.data;
+
 
   showimg.value = true;
-  // console.log("刷新后", fileList.value);
 };
 // 轮播图上传
 const handleFinish = ({ file, event }) => {
@@ -156,20 +158,12 @@ const handleRemove = async ({ file, fileList }) => {
     positiveText: "确定",
     negativeText: "不确定",
     onPositiveClick: () => {
-      // console.log("删除传过来的file", file, fileList);
-      axios
-        .delete("/lbt/_token/delimg", {
-          params: {
-            image: file.name,
-          },
-        })
-        .then((res) => {
-          message.info("删除成功");
-          loadlbt();
-        });
+      deleteSwiperById(file.name).then((res) => {
+        message.info(res.message);
+        loadlbt();
+      });
     },
     onNegativeClick: () => {
-      message.error("取消");
       loadlbt();
     },
   });

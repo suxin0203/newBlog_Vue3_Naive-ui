@@ -2,12 +2,16 @@ import axios from 'axios';
 import { AdminStore } from "@/stores/AdminStore";
 import { createDiscreteApi } from "naive-ui";
 import { router } from "../common/router";
-
+const adminStore = AdminStore();
 
 
 const { message } = createDiscreteApi([
   "message",
 ]);
+
+
+axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;
+// axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 
 const BASE_URL = '/'; // 你的 API 基础路径，可以根据需求修改
 
@@ -34,13 +38,9 @@ instance.interceptors.response.use(
   (response) => {
     // 在这里处理响应数据，根据需求做相应的操作
     // 获取res.code 如果是401则跳转到登录页面 并且清除本地存储中的token
-    if (response.data.code === 401) {
-      const adminStore = AdminStore();
-      adminStore.delToken();
-      message.error("登录失效，请重新登录");
-      // 刷新页面
-      router.go(0);
-
+    if (response.data.code === 401 || response.data.code === 403) {
+      response.data.code === 401?adminStore.delToken():console.log('没有权限');
+      message.error(response.data.message || "请重新登录");
     }
     return response.data;
   },

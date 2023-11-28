@@ -35,18 +35,21 @@ export const AdminStore = defineStore(STORE_NAME, {
             localStorage.removeItem(TOKEN_KEY);
             // 清除本地存储中的用户信息
             localStorage.removeItem(USERINFO_KEY);
+            // 刷新页面
+            window.location.reload();
         },
         // 获取用户信息
         getAdminInfo() {
             // console.log('获取用户信息');
             const userInfo = JSON.parse(localStorage.getItem('userInfo'));
-            this.id = userInfo.id;
-            this.username = userInfo.username;
-            this.nickname = userInfo.nickname;
-            this.avatar_url = userInfo.avatar_url;
-            this.openid = userInfo.openid;
-            this.created_at = userInfo.created_at;
-            this.is_root = userInfo.is_root;
+            const{ id, username, nickname, avatar_url, openid, created_at, is_root } = userInfo;
+            this.id = id;
+            this.username = username;
+            this.nickname = nickname;
+            this.avatar_url = avatar_url;
+            this.openid = openid;
+            this.created_at = created_at;
+            this.is_root = is_root;
         },
         // 获取全局配置
         async getgloablOptions(optins) {

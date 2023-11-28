@@ -6,18 +6,31 @@
           v-for="blog in blogListInfo"
           :key="blog.id"
           style="margin-bottom: 10px"
+          @click="goArticle(blog)"
         >
           <n-card :title="blog.title" hoverable>
             {{ blog.content }}
             <template #footer>
               <n-space align="center">
-                <div style="font-size: 14px">
-                  发布时间：{{ blog.created_at }}
-                </div>
-              </n-space>
-              <n-space>
-                <n-button ghost @click="toUpdate(blog)"> 修改 </n-button>
-                <n-button ghost @click="toDelete(blog)"> 删除 </n-button>
+                <n-tag :bordered="false">
+                  时间：{{ blog.created_at }}
+                </n-tag>
+                <n-button
+                  type="primary"
+                  ghost
+                  size="small"
+                  @click.stop="toUpdate(blog)"
+                >
+                  修改
+                </n-button>
+                <n-button
+                  type="error"
+                  ghost
+                  size="small"
+                  @click.stop="toDelete(blog)"
+                >
+                  删除
+                </n-button>
               </n-space>
             </template>
           </n-card>
@@ -39,7 +52,7 @@
         </n-space>
       </n-tab-pane>
       <n-tab-pane name="add" tab="添加文章">
-        <n-form ref="addForm" >
+        <n-form ref="addForm">
           <n-form-item label="标题">
             <n-input
               v-model:value="addArticleData.title"
@@ -63,7 +76,7 @@
       </n-tab-pane>
       <n-tab-pane name="update" tab="修改文章" :disabled="true">
         <n-form ref="updateForm">
-          <n-form-item :label="'标题' + '  (id : ' + updateArticle.id + ')'">
+          <n-form-item :label="'标题' + '  (ID : ' + updateArticle.id + ')'">
             <n-input
               v-model:value="updateArticle.title"
               placeholder="请输入标题"
@@ -93,6 +106,7 @@
 import { AdminStore } from "@/stores/AdminStore";
 import { reactive, ref, inject, onMounted } from "vue";
 import RichTextEditor from "@/components/RichTextEditor.vue";
+import { router, routes } from "@/common/router.js";
 import {
   getArticleList,
   getCategoryList,
@@ -159,6 +173,14 @@ const getCategories = async () => {
 
 // 新增文章
 const add = async () => {
+  if (addArticleData.title == "") {
+    message.error("标题不能为空");
+    return;
+  }
+  if (addArticleData.content == "") {
+    message.error("内容不能为空");
+    return;
+  }
   let res = await addArticle(addArticleData);
   if (res.code == 200) {
     message.info(res.message);
@@ -178,6 +200,10 @@ const toPage = async (pageNum) => {
   getArticles();
 };
 
+const goArticle = (blog) => {
+  router.push({ path: "/detail", query: { id: blog.id } });
+};
+
 // 获取更新的文章内容
 const toUpdate = async (blog) => {
   let res = await getArticleById(blog.id);
@@ -191,6 +217,14 @@ const toUpdate = async (blog) => {
 
 // 更新文章
 const update = async () => {
+  if (updateArticle.title == "") {
+    message.error("标题不能为空");
+    return;
+  }
+  if (updateArticle.content == "") {
+    message.error("内容不能为空");
+    return;
+  }
   let res = await updateArticleById(updateArticle.id, updateArticle);
   if (res.code == 200) {
     message.info(res.message);
@@ -225,5 +259,4 @@ const toDelete = async (blog) => {
 </script>
 
 <style lang="less" scoped>
-
 </style>

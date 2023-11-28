@@ -31,7 +31,6 @@
                 v-model:value="admin.countresult"
                 :style="{ width: '80%' }"
                 placeholder="请输入计算结果"
-                type="number"
                 @keyup.enter="login()"
               />
             </n-input-group>
@@ -41,16 +40,13 @@
           <n-checkbox
             v-model:checked="admin.remember"
             label="记住我"
-            style="background-color: transparent"
+            style="background-color: transparent;margin-bottom: 20px;"
           />
-          <div>
+          <n-space justify="space-around" size="large">
             <n-button
               type="primary"
-              secondary
-              strong
               @click="login"
               class="loginbtn"
-              style="margin-top: 10px; width: 50%"
               @keyup.enter="login()"
             >
               登录
@@ -61,11 +57,10 @@
               strong
               @click="register"
               class="loginbtn"
-              style="margin-top: 10px; width: 50%"
             >
               注册
             </n-button>
-          </div>
+          </n-space>
         </template>
       </n-card>
       <div class="qiu1"></div>
@@ -76,7 +71,7 @@
 <script setup>
 import { reactive, ref, inject, onMounted } from "vue";
 import { AdminStore } from "../stores/AdminStore";
-import {router , routes} from "@/common/router.js";
+import { router, routes } from "@/common/router.js";
 import { userLogin, userRegister } from "../api/api";
 
 const axios = inject("axios");
@@ -92,8 +87,8 @@ let sum = ref();
 // 获取用户保存的账号密码
 const { username, password, remember } = localStorage;
 const admin = reactive({
-  username: username || "test",
-  password: password ? atob(password) : "123456",
+  username: username || "",
+  password: password ? atob(password) : "",
   remember: !!remember || false,
   countresult: "",
 });
@@ -140,6 +135,10 @@ const login = async (e) => {
           localStorage.setItem("username", username);
           localStorage.setItem("password", btoa(password));
           localStorage.setItem("remember", 1);
+        }else{
+          localStorage.removeItem("username");
+          localStorage.removeItem("password");
+          localStorage.removeItem("remember");
         }
       } else {
         message.error(res.message);
@@ -257,6 +256,10 @@ button {
   // background-color: hsl(236, 32%, 26%);
   overflow: hidden;
   transition: color 0.6s ease-in-out;
+}
+
+.loginbtn {
+  width: 140px;
 }
 
 .loginbtn::before {

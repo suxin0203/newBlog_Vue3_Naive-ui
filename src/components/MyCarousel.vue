@@ -4,7 +4,7 @@
       <n-carousel autoplay draggable>
         <img
           class="carousel-img"
-          :src="item.newhref"
+          :src="item.href"
           v-for="item in fileList"
           :key="item.id"
         />
@@ -26,7 +26,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import { getOtherswitch } from "@/api/api";
+import { getOtherswitch,getSwiperList } from "@/api/api";
 import { AdminStore } from "@/stores/AdminStore";
 
 const adminStore = AdminStore();
@@ -43,9 +43,14 @@ const getOtherswitchs = async () => {
   adminStore.getgloablOptions(res.data);
   notice.value = res.data.find((item) => item.name === "notice");
   noticecontent.value = res.data.find((item) => item.name === "noticecontent");
-  fileList.value = JSON.parse(
-    res.data.find((item) => item.name === "lunbotu").content
-  );
+  // 旧的轮播图
+  // fileList.value = JSON.parse(
+  //   res.data.find((item) => item.name === "lunbotu").content
+  // );
+
+  // 新的轮播图
+  const SwiperList = await getSwiperList();
+  fileList.value = SwiperList.data;
 };
 </script>
 

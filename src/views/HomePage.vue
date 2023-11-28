@@ -69,29 +69,18 @@
           <div class="stk">
             <n-space vertical>
               <n-card hoverable>
-                <div class="myavatar" v-if="!adminStore.token">
+                <div class="myavatar" >
                   <n-avatar
                     round
-                    :size="60"
-                    src="https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474"
+                    size="60"
+                    class="animationClass"
+                    :src="adminStore.avatar_url ||'https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474'"
+                    @click="gouser"
                   />
-                  <p>小苏的个人闲聊站</p>
+                  <p>{{adminStore.nickname ||adminStore.username || "小苏的个人闲聊站" }} {{ adminStore.is_root ? "👑" : "" }}</p>
                   <n-space>
-                    <n-button type="primary" @click="tologin"> 登录 </n-button>
-                  </n-space>
-                </div>
-                <div class="myavatar" v-else>
-                  <n-avatar round :size="60" :src="adminStore.avatar_url" />
-                  <p>
-                    {{
-                      adminStore.nickname
-                        ? adminStore.nickname
-                        : adminStore.username
-                    }}
-                    {{ adminStore.is_root ? "👑" : "" }}
-                  </p>
-                  <n-space>
-                    <n-button type="primary" @click="logout"> 注销 </n-button>
+                    <n-button type="primary" @click="gouser" v-if="!adminStore.token">登录</n-button>
+                    <n-button type="primary" @click="logout" v-if="adminStore.token">注销</n-button>
                   </n-space>
                 </div>
               </n-card>
@@ -109,22 +98,10 @@
               </n-card>
               <n-card title="友链" hoverable>
                 <n-space>
-                  <a href="http://www.suxin23.cn/">
+                  <a v-for="i in friendUrl" :key="i.id" :href="i.url">
                     <n-button quaternary type="primary">
-                      苏辛博客(原)
+                      {{ i.name }}
                     </n-button>
-                  </a>
-                  <a href="https://github.com/suxin0203">
-                    <n-button quaternary type="primary">
-                      GitHub-suxin
-                    </n-button>
-                  </a>
-
-                  <a href="https://www.naiveui.com/">
-                    <n-button quaternary type="primary"> Naive UI </n-button>
-                  </a>
-                  <a href="https://www.itbooks.work/">
-                    <n-button quaternary type="primary"> 天界程序员 </n-button>
                   </a>
                 </n-space>
               </n-card>
@@ -173,11 +150,41 @@ import MyHeaderVue from "@/components/MyHeader.vue";
 import MyCarouselVue from "@/components/MyCarousel.vue";
 import { AdminStore } from "@/stores/AdminStore";
 import { getCategoryList, getArticleList, getOtherswitch } from "@/api/api";
+import { c } from "naive-ui";
 
 const adminStore = AdminStore();
+const { nickname, avatar_url, is_root, token } = adminStore;
 const categoryOptions = ref([]); //分类列表
 const blogListInfo = ref([]);
 const show = ref(true);
+const animationClass = ref("");
+const friendUrl = ref([
+  {
+    id: 1,
+    name: "苏辛博客(原)",
+    url: "http://www.suxin23.cn/",
+  },
+  {
+    id: 2,
+    name: "GitHub-suxin",
+    url: "https://github.com/suxin0203",
+  },
+  {
+    id: 3,
+    name: "Naive UI",
+    url: "https://www.naiveui.com/",
+  },
+  {
+    id: 4,
+    name: "天界程序员",
+    url: "https://www.itbooks.work/",
+  },
+  {
+    id: 5,
+    name: "百度一下",
+    url: "https://www.baidu.com/",
+  },
+]);
 
 onMounted(async () => {
   await getCategories();
@@ -192,9 +199,6 @@ const toMsg = () => {
   router.push("/sendmsg"); //跳转到留言页面
 };
 
-const tologin = () => {
-  router.push("/login"); //跳转到登录页面
-};
 const logout = () => {
   // delToken
   adminStore.delToken();
@@ -219,6 +223,11 @@ const getCategories = async () => {
 //跳转到详情页
 const toDetail = (blog) => {
   router.push({ path: "/detail", query: { id: blog.id } });
+};
+
+//跳转到/dashboard/user
+const gouser = () => {
+  adminStore.token?router.push("/dashboard/user"):router.push("/login");
 };
 
 const changePageSize = (pageSize) => {
@@ -391,6 +400,7 @@ const searchKeyword = (keyword) => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  // #avatarhover:hover 放大1.2倍动画
 }
 .stk {
   position: sticky;

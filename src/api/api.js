@@ -201,3 +201,22 @@ export function updateMessageById(id, data) {
     data,
   })
 }
+
+// 获取轮播图列表
+export function getSwiperList() {
+  return request({
+    url: '/upload/imglist',
+    method: 'get',
+  })
+}
+
+// 删除轮播图delete方法
+export function deleteSwiperById(image) {
+  return request({
+    url: `/upload/token/delimg`,
+    method: 'delete',
+    params: {
+      image,
+    },
+  })
+}

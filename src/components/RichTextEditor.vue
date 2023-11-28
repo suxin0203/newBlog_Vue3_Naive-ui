@@ -42,6 +42,7 @@ const props = defineProps({
 });
 
 const server_url = inject("server_url");
+const token = localStorage.getItem("token");
 
 // 编辑器实例，必须用 shallowRef，重要！
 const editorRef = shallowRef();
@@ -54,7 +55,11 @@ editorConfig.MENU_CONF = {};
 editorConfig.MENU_CONF["uploadImage"] = {
   // 小于该值就插入 base64 格式（而不上传），默认为 0
   base64LimitSize: 10 * 1024, // 5kb
-  server: server_url + "/upload/rich_editor_upload",
+  server: server_url + "/upload/token/rich_editor_upload",
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+
 };
 
 editorConfig.MENU_CONF["insertImage"] = {
