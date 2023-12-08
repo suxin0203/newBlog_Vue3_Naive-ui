@@ -95,7 +95,7 @@
             v-model:value="addMeassage.content"
             placeholder="请输入您的留言"
             clearable
-            maxlength="16"
+            maxlength="20"
           />
         </n-input-group>
       </div>
@@ -121,7 +121,7 @@ const message = inject("message");
 // const adminStore = AdminStore()
 
 const addMeassage = reactive({
-  name: "",
+  name: localStorage.getItem("username") || "匿名",
   content: "",
   value: 28,
 });
@@ -129,14 +129,14 @@ const msgdata = ref([]);
 
 const add = async (data) => {
   // 格式化name 防止xss
-  data.content = data.name.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  data.content = data.content.replace(/</g, "&lt;").replace(/>/g, "&gt;");
   // let res =  await axios.post("/wordmsg/add", data);
   let res = await addMessage(data);
   if (res.code == 200) {
     loadmsg();
-    message.info(res.data.msg);
+    message.info(res.message);
   } else {
-    message.error(res.data.msg);
+    message.error(res.message);
   }
   // message.error("暂未开放");
   showUpdateModal.value = false;
@@ -148,6 +148,7 @@ const loadmsg = async () => {
       name: item.content,
       value: item.value,
       author: item.name,
+      id: item.id,
     };
   });
 

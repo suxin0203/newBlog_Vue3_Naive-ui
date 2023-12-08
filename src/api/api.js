@@ -220,3 +220,12 @@ export function deleteSwiperById(image) {
     },
   })
 }
+
+// 网易云音乐热评
+export function getMusicComments() {
+  return request({
+    baseURL: 'https://api.uomg.com', // 修改为你想要的基础 URL
+    url: '/api/comments.163?format=json',
+    method: 'get',
+  });
+}

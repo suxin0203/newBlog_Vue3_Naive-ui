@@ -1,5 +1,25 @@
 <template>
   <div class="bodyc">
+    <button type="button" class="button" @click="router.push('/')">
+      <span class="button__text">返 回</span>
+      <span class="button__icon"
+        ><svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="24"
+          viewBox="0 0 24 24"
+          stroke-width="2"
+          stroke-linejoin="round"
+          stroke-linecap="round"
+          stroke="currentColor"
+          height="24"
+          fill="none"
+          class="svg"
+        >
+          <line x1="25" y1="12" x2="5" y2="12"></line>
+          <polyline points="12 19 5 12 12 5"></polyline>
+        </svg>
+      </span>
+    </button>
     <div class="login-pane">
       <div class="qiu"></div>
       <n-card title="管理员登录">
@@ -40,7 +60,7 @@
           <n-checkbox
             v-model:checked="admin.remember"
             label="记住我"
-            style="background-color: transparent;margin-bottom: 20px;"
+            style="background-color: transparent; margin-bottom: 20px"
           />
           <n-space justify="space-around" size="large">
             <n-button
@@ -135,7 +155,7 @@ const login = async (e) => {
           localStorage.setItem("username", username);
           localStorage.setItem("password", btoa(password));
           localStorage.setItem("remember", 1);
-        }else{
+        } else {
           localStorage.removeItem("username");
           localStorage.removeItem("password");
           localStorage.removeItem("remember");
@@ -348,5 +368,71 @@ button {
     z-index: 0;
     animation: bounce-down 8s linear infinite;
   }
+}
+
+//以下是退出按钮的样式
+.button {
+  position: relative;
+  width: 150px;
+  height: 40px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  border: 1px solid #34974d;
+  background-color: #3aa856;
+  border-radius: 15px;
+  // 固定定位
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+}
+
+.button,
+.button__icon,
+.button__text {
+  transition: all 0.3s;
+}
+
+.button .button__text {
+  transform: translateX(30px);
+  color: #fff;
+  font-weight: 600;
+}
+
+.button .button__icon {
+  position: absolute;
+  transform: translateX(99px);
+  height: 100%;
+  width: 39px;
+  background-color: #34974d;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button .svg {
+  width: 30px;
+  stroke: #fff;
+}
+
+.button:hover {
+  background: #34974d;
+}
+
+.button:hover .button__text {
+  color: transparent;
+}
+
+.button:hover .button__icon {
+  width: 118px;
+  transform: translateX(0);
+}
+
+.button:active .button__icon {
+  background-color: #2e8644;
+}
+
+.button:active {
+  border: 1px solid #2e8644;
 }
 </style>

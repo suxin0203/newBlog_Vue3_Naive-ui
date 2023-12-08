@@ -127,7 +127,6 @@ const toAboutMe = (blog) => {
   // router.push("/aboutme"); //跳转到关于我
   // 新标签的打开suxin0203的github
   window.open("https://github.com/suxin0203");
-  
 };
 
 const toMessage = (blog) => {
@@ -207,6 +206,7 @@ const toArticle = (blog) => {
   &-l {
     height: 80px;
     display: flex;
+    width: 65%;
     &-menu {
       // width: 280px;
       width: 330px;

@@ -7,6 +7,9 @@ import { createPinia } from "pinia";
 import { router } from "./common/router";
 import axios from "axios";
 
+// 引入animate.css
+import 'animate.css';
+
 
 
 axios.defaults.baseURL = import.meta.env.VITE_BASE_URL;

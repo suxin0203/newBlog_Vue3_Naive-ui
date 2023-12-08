@@ -22,15 +22,19 @@
             <div class="blob"></div>
           </div>
           <div v-if="show">
-            <n-card v-for="i of 5" :key="i" style="margin-top: 20px">
+            <n-card
+              v-for="i of pageInfo.pageSize"
+              :key="i"
+              style="margin-top: 20px"
+            >
               <n-skeleton :width="180" :sharp="false" size="medium" />
               <div style="margin: 10px 0">
                 <n-skeleton text :repeat="1" />
                 <n-skeleton text style="width: 60%" />
               </div>
               <n-space justify="space-between">
-                <n-skeleton :width="40" :sharp="false" size="mini" />
-                <n-skeleton :width="120" :sharp="false" size="mini" />
+                <n-skeleton :width="80" :sharp="false" size="mini" />
+                <n-skeleton :width="160" :sharp="false" size="mini" />
               </n-space>
             </n-card>
           </div>
@@ -44,22 +48,24 @@
               class="main-body-l-item"
               @click="toDetail(blog)"
             >
-              <!-- <span>{{ blog.content }}</span> -->
-              <!-- <pre>
-                  {{ blog.content }}
-                </pre> -->
-              <code>
-                {{ blog.content }}
-              </code>
+              <blockquote class="contentStyle">
+                <code>
+                  {{ blog.content + "..." }}
+                </code>
+              </blockquote>
               <template #footer>
-                <span class="create-time">
-                  {{
-                    categoryOptions.find(
-                      (item) => item.value === blog.category_id
-                    ).label
-                  }}</span
-                >
-                <span style="float: right"> ⏱{{ blog.created_at }} </span>
+                <n-space justify="space-between">
+                  <n-space>
+                    <n-icon :component="CodeSlashOutline" size="20" />
+                    <span>
+                      {{ categoryMap[blog.category_id] }}
+                    </span>
+                  </n-space>
+                  <n-space>
+                    <n-icon :component="TimeOutline" size="20" />
+                    <span> {{ blog.created_at }} </span>
+                  </n-space>
+                </n-space>
               </template>
             </n-card>
           </div>
@@ -67,24 +73,23 @@
 
         <div class="main-body-r">
           <div class="stk">
-            <n-space vertical>
+            <n-space vertical class="animate__animated animate__fadeInRight">
               <n-card hoverable>
-                <div class="myavatar" >
+                <div class="myavatar">
                   <n-avatar
                     round
                     size="60"
-                    class="animationClass"
-                    :src="adminStore.avatar_url ||'https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474'"
+                    class="animate__animated animate__rotateIn"
+                    :src="displayAvatarUrl"
                     @click="gouser"
                   />
-                  <p>{{adminStore.nickname ||adminStore.username || "小苏的个人闲聊站" }} {{ adminStore.is_root ? "👑" : "" }}</p>
-                  <n-space>
-                    <n-button type="primary" @click="gouser" v-if="!adminStore.token">登录</n-button>
-                    <n-button type="primary" @click="logout" v-if="adminStore.token">注销</n-button>
-                  </n-space>
+                  <p>{{ displayUsername }}</p>
+                  <n-button type="primary" @click="token ? logout() : gouser()">
+                    {{ token ? "注销" : "登录" }}</n-button
+                  >
                 </div>
               </n-card>
-              <n-card title="分类" hoverable>
+              <n-card title="🏷️ 分类" hoverable>
                 <n-space>
                   <n-tag
                     :bordered="false"
@@ -96,7 +101,7 @@
                   </n-tag>
                 </n-space>
               </n-card>
-              <n-card title="友链" hoverable>
+              <n-card title="🔗 友链" hoverable>
                 <n-space>
                   <a v-for="i in friendUrl" :key="i.id" :href="i.url">
                     <n-button quaternary type="primary">
@@ -105,19 +110,39 @@
                   </a>
                 </n-space>
               </n-card>
-              <n-card title="📖 如何成功" embedded :bordered="false" hoverable>
+              <n-card title="📖 网易热评" embedded :bordered="false" hoverable>
                 <n-space>
-                  <n-tag :bordered="false" type="info" size="small">
-                    教程 </n-tag
-                  ><n-tag :bordered="false" type="info" size="small">
-                    思维 </n-tag
-                  ><n-tag :bordered="false" type="info" size="small">
-                    联想
-                  </n-tag>
+                  <n-gradient-text :size="16" type="success">
+                    《{{ musicSwitch.name }}》
+                  </n-gradient-text>
+                  <span>
+                    <n-tag :bordered="false" type="info"
+                      >{{ musicSwitch.nickname }}：</n-tag
+                    >
+                    {{ musicSwitch.content }}</span
+                  >
+                  <n-space justify="space-around">
+                    <n-button
+                      :loading="loadingRef"
+                      type="primary"
+                      ghost
+                      size="small"
+                      :render-icon="renderIcon"
+                      @click="getMusicComment()"
+                    >
+                      下一条
+                    </n-button>
+                    <n-button
+                      type="primary"
+                      ghost
+                      size="small"
+                      :render-icon="MusicalNotesOutlineIcon"
+                      @click="window.open(musicSwitch.url)"
+                    >
+                      听此曲
+                    </n-button>
+                  </n-space>
                 </n-space>
-
-                如果你年轻的时候不 996，你什么时候可以 996？你一辈子没有
-                996，你觉得你就很骄傲了？这个世界上，我们每一个人都希望成功，都希望美好生活，都希望被尊重，我请问大家，你不付出超越别人的努力和时间，你怎么能够实现你想要的成功？
               </n-card>
             </n-space>
           </div>
@@ -128,12 +153,12 @@
       <n-pagination
         class="fenye"
         v-model:page="pageInfo.page"
-        @update:page="getArtiles()"
         v-model:page-count="pageInfo.totalPages"
-        :page-sizes="[10, 20, 50, 5]"
-        @update:page-size="changePageSize"
-        show-quick-jumper
+        :default-page-size="10"
+        :page-sizes="[5, 10, 20, 50]"
         show-size-picker
+        @update:page-size="changePageSize"
+        @update:page="getArtiles()"
       />
       <n-divider />
     </div>
@@ -143,21 +168,54 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, onMounted, computed } from "vue";
+import { reactive, ref, inject, onMounted, computed, h } from "vue";
 import { router, routes } from "@/common/router.js";
 import MyFooterVue from "@/components/MyFooter.vue";
 import MyHeaderVue from "@/components/MyHeader.vue";
 import MyCarouselVue from "@/components/MyCarousel.vue";
 import { AdminStore } from "@/stores/AdminStore";
-import { getCategoryList, getArticleList, getOtherswitch } from "@/api/api";
-import { c } from "naive-ui";
+import { NIcon } from "naive-ui";
+import {
+  CodeSlashOutline,
+  TimeOutline,
+  ReloadOutline,
+  MusicalNotesOutline,
+} from "@vicons/ionicons5";
+import axios from "axios";
+import {
+  getCategoryList,
+  getArticleList,
+  getOtherswitch,
+  getMusicComments,
+} from "@/api/api";
 
 const adminStore = AdminStore();
-const { nickname, avatar_url, is_root, token } = adminStore;
+const { avatar_url, nickname, username, is_root, token } = adminStore;
 const categoryOptions = ref([]); //分类列表
+const categoryMap = ref({}); //分类列表
 const blogListInfo = ref([]);
 const show = ref(true);
 const animationClass = ref("");
+const musicSwitch = ref({});
+const renderIcon = () => {
+  return h(NIcon, null, {
+    default: () => h(ReloadOutline),
+  });
+};
+const MusicalNotesOutlineIcon = () => {
+  return h(NIcon, null, {
+    default: () => h(MusicalNotesOutline),
+  });
+};
+const loadingRef = ref(false);
+const displayUsername = ref(
+  (nickname || username || "小苏的个人闲聊站") + (is_root ? "👑" : "")
+);
+const displayAvatarUrl = ref(
+  avatar_url ||
+    "https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474" ||
+    "https://www.suxin23.cn/images/avatar.jpg"
+);
 const friendUrl = ref([
   {
     id: 1,
@@ -189,6 +247,7 @@ const friendUrl = ref([
 onMounted(async () => {
   await getCategories();
   getArtiles();
+  getMusicComment();
 });
 
 const gohome = () => {
@@ -204,7 +263,14 @@ const logout = () => {
   adminStore.delToken();
   console.log("退出登录");
 };
-
+// 获取音乐评论
+const getMusicComment = async () => {
+  loadingRef.value = true;
+  let res = await getMusicComments();
+  musicSwitch.value = res.data;
+  loadingRef.value = false;
+  // axios.get('https://api.uomg.com/api/comments.163?format=json').then(res => console.log(res)).catch(error => console.log(error))
+};
 // 获取全部分类
 const getCategories = async () => {
   let res = await getCategoryList();
@@ -218,6 +284,11 @@ const getCategories = async () => {
     label: "全部分类",
     value: 0,
   });
+
+  // 预处理数据：将分类选项转换为以 category_id 为键，label 为值的对象
+  categoryOptions.value.forEach((item) => {
+    categoryMap.value[item.value] = item.label;
+  });
 };
 
 //跳转到详情页
@@ -227,7 +298,7 @@ const toDetail = (blog) => {
 
 //跳转到/dashboard/user
 const gouser = () => {
-  adminStore.token?router.push("/dashboard/user"):router.push("/login");
+  adminStore.token ? router.push("/dashboard/user") : router.push("/login");
 };
 
 const changePageSize = (pageSize) => {
@@ -278,6 +349,12 @@ const searchKeyword = (keyword) => {
 </script>
 
 <style lang="less" scoped>
+.contentStyle {
+  border-left: 8px solid #18a058;
+  padding: 10px;
+  margin: 10px 0;
+  background-color: #f1f1f1;
+}
 .header2 {
   background-color: #fff;
   a {

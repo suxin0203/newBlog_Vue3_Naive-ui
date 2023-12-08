@@ -22,13 +22,13 @@
         <div class="main-body-l">
           <n-card id="main-page">
             <h1>{{ blogInfo.title }}</h1>
-              <n-space justify="space-between">
-            <n-tag :bordered="false" type="success">
-              {{ blogInfo.category_name }}
-            </n-tag>
-            <n-tag :bordered="false">
-              {{ blogInfo.created_at }}
-            </n-tag>
+            <n-space justify="space-between">
+              <n-tag :bordered="false" type="success">
+                {{ blogInfo.category_name }}
+              </n-tag>
+              <n-tag :bordered="false">
+                {{ blogInfo.created_at }}
+              </n-tag>
             </n-space>
             <hr />
             <div>
@@ -46,18 +46,38 @@
           <div class="stk">
             <n-space vertical>
               <n-card hoverable>
-                <div class="myavatar" >
+                <div class="myavatar">
                   <n-avatar
                     round
                     size="60"
                     class="animationClass"
-                    :src="adminStore.avatar_url ||'https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474'"
+                    :src="
+                      adminStore.avatar_url ||
+                      'https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474'
+                    "
                     @click="gouser"
                   />
-                  <p>{{adminStore.nickname ||adminStore.username || "小苏的个人闲聊站" }} {{ adminStore.is_root ? "👑" : "" }}</p>
+                  <p>
+                    {{
+                      adminStore.nickname ||
+                      adminStore.username ||
+                      "小苏的个人闲聊站"
+                    }}
+                    {{ adminStore.is_root ? "👑" : "" }}
+                  </p>
                   <n-space>
-                    <n-button type="primary" @click="gouser" v-if="!adminStore.token">登录</n-button>
-                    <n-button type="primary" @click="logout" v-if="adminStore.token">注销</n-button>
+                    <n-button
+                      type="primary"
+                      @click="gouser"
+                      v-if="!adminStore.token"
+                      >登录</n-button
+                    >
+                    <n-button
+                      type="primary"
+                      @click="logout"
+                      v-if="adminStore.token"
+                      >注销</n-button
+                    >
                   </n-space>
                 </div>
               </n-card>
@@ -126,12 +146,15 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, onMounted, computed } from "vue";
+import { reactive, ref, inject, onMounted, computed, nextTick } from "vue";
 import { router, routes } from "@/common/router.js";
 import MyFooterVue from "@/components/MyFooter.vue";
 import { getArticleDetail, getCategoryList } from "@/api/api";
 import MyHeaderVue from "@/components/MyHeader.vue";
 import { AdminStore } from "@/stores/AdminStore";
+import Prism from "prismjs";
+import "prismjs/themes/prism-tomorrow.css";
+// import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 
 const adminStore = AdminStore();
 const blogInfo = ref({});
@@ -149,19 +172,12 @@ const pageInfo = reactive({
   category_id: 0, //  分类id
 });
 
-onMounted(() => {
-  getArticleById();
-  getCategories();
-});
-
 const getArticleById = async () => {
-  getArticleDetail(router.currentRoute.value.query.id).then((res) => {
-    blogInfo.value = res.data[0];
+  const res = await getArticleDetail(router.currentRoute.value.query.id);
+  blogInfo.value = res.data[0];
+  await nextTick(() => {
+    Prism.highlightAll();
   });
-};
-
-const goback = () => {
-  router.push("/");
 };
 
 // 获取全部分类
@@ -179,13 +195,21 @@ const getCategories = async () => {
   });
 };
 
+getArticleById();
+getCategories();
+
+
+const goback = () => {
+  router.push("/");
+};
+
 const gohome = () => {
   router.push("/"); //跳转到首页
 };
 
 //跳转到/dashboard/user
 const gouser = () => {
-  adminStore.token?router.push("/dashboard/user"):router.push("/login");
+  adminStore.token ? router.push("/dashboard/user") : router.push("/login");
 };
 
 const logout = () => {
