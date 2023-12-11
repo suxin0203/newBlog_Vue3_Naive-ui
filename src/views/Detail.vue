@@ -36,6 +36,7 @@
                 v-html="blogInfo.content"
                 id="editor-content-view"
                 class="editor-content-view"
+                @click="showImg($event)"
               ></div>
               <n-back-top :right="50" :bottom="100" />
             </div>
@@ -142,6 +143,19 @@
       <n-divider />
     </div>
     <MyFooterVue />
+    <!-- 富文本图片放大 -->
+    <div
+      class="imgDolg"
+      v-show="imgPreview.show"
+      @click.stop="imgPreview.show = false"
+    >
+      <n-icon :component="CloseCircleOutline" size="60" id="imgDolgClose" @click.stop="imgPreview.show = false"/>
+      <img
+        @click.stop="imgPreview.show = true"
+        :src="imgPreview.img"
+        class="animate__animated animate__fadeIn"
+      />
+    </div>
   </div>
 </template>
 
@@ -155,6 +169,7 @@ import { AdminStore } from "@/stores/AdminStore";
 import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 // import "prismjs/plugins/line-numbers/prism-line-numbers.css";
+import { CloseCircleOutline } from "@vicons/ionicons5";
 
 const adminStore = AdminStore();
 const blogInfo = ref({});
@@ -162,6 +177,10 @@ const selectedCategory = ref(0);
 const categoryOptions = ref([]); //分类列表
 const blogListInfo = ref([]);
 const isActive = ref(false);
+const imgPreview = reactive({
+  show: false,
+  img: "",
+});
 
 const pageInfo = reactive({
   page: 1, //当前页码
@@ -198,6 +217,14 @@ const getCategories = async () => {
 getArticleById();
 getCategories();
 
+// 图片点击放大
+const showImg = (e) => {
+  console.log(e.target.tagName);
+  if (e.target.tagName == "IMG") {
+    imgPreview.img = e.target.src;
+    imgPreview.show = true;
+  }
+};
 
 const goback = () => {
   router.push("/");
@@ -469,6 +496,34 @@ const searchKeyword = (keyword) => {
         }
       }
     }
+  }
+}
+
+//富文本图片放大
+.imgDolg {
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  z-index: 9999;
+  background-color: rgba(56, 53, 53, 0.6);
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  #imgDolgClose {
+    position: fixed;
+    top: 10%;
+    cursor: pointer;
+    right: 5%;
+    color: white;
+    z-index: 99999;
+  }
+  img {
+    margin: auto;
+    max-width: calc(100vw - 64px);
+    max-height: calc(100vh - 64px);
+    min-width: 50%;
   }
 }
 </style>
