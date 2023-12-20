@@ -36,6 +36,8 @@ app.use(router);
 app.use(naive);
 app.use(createPinia());
 
+console.log(app);
+
 
 import { AdminStore } from "@/stores/AdminStore";
 const adminStore = AdminStore();

@@ -137,13 +137,14 @@
                       ghost
                       size="small"
                       :render-icon="MusicalNotesOutlineIcon"
-                      @click="window.open(musicSwitch.url)"
+                      @click="playmusic(musicSwitch.url)"
                     >
                       听此曲
                     </n-button>
                   </n-space>
                 </n-space>
               </n-card>
+              <MusicPlayer :musicData="musicSwitch" v-show="showMyaudio" />
             </n-space>
           </div>
         </div>
@@ -175,13 +176,15 @@ import MyHeaderVue from "@/components/MyHeader.vue";
 import MyCarouselVue from "@/components/MyCarousel.vue";
 import { AdminStore } from "@/stores/AdminStore";
 import { NIcon } from "naive-ui";
+import axios from "axios";
+import MusicPlayer from "@/components/HomeComponents/MusicPlayer.vue";
 import {
   CodeSlashOutline,
   TimeOutline,
   ReloadOutline,
   MusicalNotesOutline,
 } from "@vicons/ionicons5";
-import axios from "axios";
+
 import {
   getCategoryList,
   getArticleList,
@@ -197,6 +200,7 @@ const blogListInfo = ref([]);
 const show = ref(true);
 const animationClass = ref("");
 const musicSwitch = ref({});
+const showMyaudio = ref(false);
 const renderIcon = () => {
   return h(NIcon, null, {
     default: () => h(ReloadOutline),
@@ -258,6 +262,13 @@ const toMsg = () => {
   router.push("/sendmsg"); //跳转到留言页面
 };
 
+// 播放音乐
+const playmusic = (url) => {
+  showMyaudio.value = true;
+  // let audio = document.getElementById("Myaudio");
+  // audio.src = url;
+  // audio.play();
+};
 const logout = () => {
   // delToken
   adminStore.delToken();

@@ -22,7 +22,7 @@
         <div class="main-body-l">
           <n-card id="main-page">
             <h1>{{ blogInfo.title }}</h1>
-            <n-space justify="space-between">
+            <n-space justify="space-between" v-if="blogInfo.id">
               <n-tag :bordered="false" type="success">
                 {{ blogInfo.category_name }}
               </n-tag>
@@ -149,7 +149,12 @@
       v-show="imgPreview.show"
       @click.stop="imgPreview.show = false"
     >
-      <n-icon :component="CloseCircleOutline" size="60" id="imgDolgClose" @click.stop="imgPreview.show = false"/>
+      <n-icon
+        :component="CloseCircleOutline"
+        size="60"
+        id="imgDolgClose"
+        @click.stop="imgPreview.show = false"
+      />
       <img
         @click.stop="imgPreview.show = true"
         :src="imgPreview.img"
@@ -160,7 +165,15 @@
 </template>
 
 <script setup>
-import { reactive, ref, inject, onMounted, computed, nextTick } from "vue";
+import {
+  reactive,
+  ref,
+  inject,
+  onMounted,
+  computed,
+  nextTick,
+  watch,
+} from "vue";
 import { router, routes } from "@/common/router.js";
 import MyFooterVue from "@/components/MyFooter.vue";
 import { getArticleDetail, getCategoryList } from "@/api/api";
@@ -170,6 +183,8 @@ import Prism from "prismjs";
 import "prismjs/themes/prism-tomorrow.css";
 // import "prismjs/plugins/line-numbers/prism-line-numbers.css";
 import { CloseCircleOutline } from "@vicons/ionicons5";
+
+
 
 const adminStore = AdminStore();
 const blogInfo = ref({});
@@ -198,6 +213,15 @@ const getArticleById = async () => {
     Prism.highlightAll();
   });
 };
+
+// 监听URL参数变化
+watch(
+  () => router.currentRoute.value.query,
+  async (newQuery, oldQuery) => {
+    // console.log(newQuery);
+      await getArticleById(newQuery.id);
+  }
+);
 
 // 获取全部分类
 const getCategories = async () => {

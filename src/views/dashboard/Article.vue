@@ -9,11 +9,12 @@
           @click="goArticle(blog)"
         >
           <n-card :title="blog.title" hoverable>
+            <template #header-extra> / </template>
             {{ blog.content }}
             <template #footer>
               <n-space align="center">
                 <n-tag :bordered="false">
-                  时间：{{ blog.created_at }}
+                  创建时间：{{ blog.updated_at }}
                 </n-tag>
                 <n-button
                   type="primary"
