@@ -18,7 +18,7 @@ export default defineConfig({
     host: "0.0.0.0", //内网访问
     proxy: {
       '/api': {
-        target: 'https://api.uomg.com/api',
+        target: 'http://localhost:8080',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api/, ''),
       },
