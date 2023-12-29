@@ -50,7 +50,7 @@
             >
               <blockquote class="contentStyle">
                 <code>
-                  {{ blog.content + "..." }}
+                  {{ blog.content.slice(0,200) + "..." }}
                 </code>
               </blockquote>
               <template #footer>
@@ -335,9 +335,9 @@ const getArtiles = async (page) => {
   }
   pageInfo.category_id === 0 ? delete pageInfo.category_id : "";
   getArticleList(pageInfo).then((res) => {
-    blogListInfo.value = res.data;
-    pageInfo.totalPages = res.pagination.totalPages;
-    pageInfo.count = res.pagination.total;
+    blogListInfo.value = res.data.records
+    pageInfo.totalPages = res.data.pages
+    pageInfo.count = res.data.total
     show.value = false;
   });
 };

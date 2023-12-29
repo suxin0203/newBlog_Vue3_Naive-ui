@@ -4,7 +4,7 @@ import request from './request';
 // 获取文章列表
 export function getArticleList(data) {
   return request({
-    url: '/articles/',
+    url: '/articles',
     method: 'get',
     params: data,
   })
@@ -19,7 +19,7 @@ export function getArticleDetail(id) {
 // 获取分类列表
 export function getCategoryList() {
   return request({
-    url: '/categories/',
+    url: '/category',
     method: 'get',
   })
 }
@@ -27,7 +27,7 @@ export function getCategoryList() {
 // 登录
 export function userLogin(data) {
   return request({
-    url: '/users/login/',
+    url: '/user/login/',
     method: 'post',
     data,
   })
@@ -79,7 +79,7 @@ export function deleteArticleById(id) {
 // // 根据id获取分类
 // export function getCategoryById(id) {
 //   return request({
-//     url: `/categories/${id}`,
+//     url: `/category${id}`,
 //     method: 'get',
 //   })
 // }
@@ -87,7 +87,7 @@ export function deleteArticleById(id) {
 // 新增分类
 export function addCategory(data) {
   return request({
-    url: '/categories/token/',
+    url: '/category/',
     method: 'post',
     data,
   })
@@ -96,7 +96,7 @@ export function addCategory(data) {
 // 修改分类
 export function updateCategoryById(id, data) {
   return request({
-    url: `/categories/token/${id}`,
+    url: `/category/${id}`,
     method: 'put',
     data,
   })
@@ -105,23 +105,23 @@ export function updateCategoryById(id, data) {
 // 删除分类
 export function deleteCategoryById(id) {
   return request({
-    url: `/categories/token/${id}`,
+    url: `/category/${id}`,
     method: 'delete',
   })
 }
 
-// 获取/otherswitch/
+// 获取/global
 export function getOtherswitch() {
   return request({
-    url: '/otherswitch/',
+    url: '/global',
     method: 'get',
   })
 }
 
-// 修改/otherswitch/
+// 修改/global
 export function updateOtherswitch(id,data) {
   return request({
-    url: `/otherswitch/token/${id}`,
+    url: `/global/${id}`,
     method: 'put',
     data,
   })

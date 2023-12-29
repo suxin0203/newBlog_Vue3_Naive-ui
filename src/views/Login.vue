@@ -85,6 +85,14 @@
       </n-card>
       <div class="qiu1"></div>
     </div>
+    <div class="loadings" v-show="showLoading">
+      <div>
+        <span></span>
+        <span></span>
+        <span></span>
+        <span></span>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -103,6 +111,7 @@ const formRef = ref();
 let num1 = ref();
 let num2 = ref();
 let sum = ref();
+let showLoading = ref(false);
 
 // 获取用户保存的账号密码
 const { username, password, remember } = localStorage;
@@ -116,9 +125,9 @@ const admin = reactive({
 // 验证码逻辑
 const marthCount = () => {
   admin.countresult = "";
-  // 生成两个小于20的随机数并计算之和
-  num1.value = Math.floor(Math.random() * 20);
-  num2.value = Math.floor(Math.random() * 20);
+  // 生成两个大于0，小于99的随机数并计算之和
+  num1.value = Math.floor(Math.random() * 99 + 1);
+  num2.value = Math.floor(Math.random() * 99 + 1);
   sum.value = num1.value + num2.value;
 };
 // 页面加载时候执行一次
@@ -137,6 +146,7 @@ let rules = {
 };
 
 const login = async (e) => {
+  showLoading.value = true;
   // 校验表单
   // e.preventDefault();
   formRef.value?.validate(async (errors) => {
@@ -169,6 +179,7 @@ const login = async (e) => {
       marthCount();
     }
   });
+  showLoading.value = false;
 };
 
 const register = async (e) => {
@@ -434,5 +445,60 @@ button {
 
 .button:active {
   border: 1px solid #2e8644;
+}
+
+.loadings {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100vw;
+  height: 100vh;
+  z-index: 9998;
+  background-color: rgba(17, 168, 98, 0.61);
+  div {
+      position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+    z-index: 9999;
+    display: flex;
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: space-between;
+    width: 2em;
+    span {
+      width: 0.3em;
+      height: 1em;
+      background-color: #3cefff;
+    }
+
+    span:nth-of-type(1) {
+      animation: grow 1s -0.45s ease-in-out infinite;
+    }
+
+    span:nth-of-type(2) {
+      animation: grow 1s -0.3s ease-in-out infinite;
+    }
+
+    span:nth-of-type(3) {
+      animation: grow 1s -0.15s ease-in-out infinite;
+    }
+
+    span:nth-of-type(4) {
+      animation: grow 1s ease-in-out infinite;
+    }
+
+    @keyframes grow {
+      0%,
+      100% {
+        transform: scaleY(1);
+      }
+
+      50% {
+        transform: scaleY(2);
+      }
+    }
+  }
 }
 </style>

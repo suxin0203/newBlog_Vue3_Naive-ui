@@ -155,9 +155,9 @@ onMounted(() => {
 //  获取文章列表
 const getArticles = async () => {
   let res = await getArticleList(pageInfo);
-  blogListInfo.value = res.data;
-  pageInfo.pageCount = res.pagination.totalPages;
-  pageInfo.count = res.pagination.total;
+    blogListInfo.value = res.data.records
+    pageInfo.totalPages = res.data.pages
+    pageInfo.count = res.data.total
 };
 
 // 获取全部分类
