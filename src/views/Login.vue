@@ -67,9 +67,9 @@
               type="primary"
               @click="login"
               class="loginbtn"
-              @keyup.enter="login()"
+              @keyup.enter="login"
             >
-              登录
+              登录{{ showLoading }}
             </n-button>
             <n-button
               type="primary"
@@ -152,34 +152,44 @@ const login = async (e) => {
   formRef.value?.validate(async (errors) => {
     let { username, password, remember, countresult } = admin;
     if (!errors && countresult == sum.value) {
-      let res = await userLogin({
-        username,
-        password,
-      });
-      if (res.code == 200) {
-        router.push("/dashboard");
-        message.info(res.message + " -欢迎回来ovo");
-        // 将用户信息存储到本地存储
-        adminStore.setToken(res.token, res.data);
-        if (remember) {
-          localStorage.setItem("username", username);
-          localStorage.setItem("password", btoa(password));
-          localStorage.setItem("remember", 1);
+      try {
+        let res = await userLogin({
+          username,
+          password,
+        });
+        if (res.code == 200) {
+          router.push("/dashboard");
+          message.info(res.message + " -欢迎回来ovo");
+          // 将用户信息存储到本地存储
+          adminStore.setToken(res.token, res.data);
+
+          if (remember) {
+            localStorage.setItem("username", username);
+            localStorage.setItem("password", btoa(password));
+            localStorage.setItem("remember", 1);
+          } else {
+            localStorage.removeItem("username");
+            localStorage.removeItem("password");
+            localStorage.removeItem("remember");
+          }
+          showLoading.value = false;
         } else {
-          localStorage.removeItem("username");
-          localStorage.removeItem("password");
-          localStorage.removeItem("remember");
+          showLoading.value = false;
+          message.error(res.message);
+          marthCount();
         }
-      } else {
-        message.error(res.message);
+      } catch (error) {
+        showLoading.value = false;
+        // message.error(error);
+        console.log(error);
         marthCount();
       }
     } else {
-      message.error("验证码错误");
+      message.error("验证不通过");
       marthCount();
+      showLoading.value = false;
     }
   });
-  showLoading.value = false;
 };
 
 const register = async (e) => {
@@ -457,10 +467,10 @@ button {
   z-index: 9998;
   background-color: rgba(17, 168, 98, 0.61);
   div {
-      position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     z-index: 9999;
     display: flex;
     flex-flow: row nowrap;
