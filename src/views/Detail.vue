@@ -13,7 +13,7 @@
     />
 
     <div class="main">
-      <div style="overflow: hidden">
+      <div style="overflow: hidden" class="main-hr">
         <n-divider />
       </div>
 
@@ -209,6 +209,8 @@ const pageInfo = reactive({
 const getArticleById = async () => {
   const res = await getArticleDetail(router.currentRoute.value.query.id);
   blogInfo.value = res.data[0];
+  // 设置网页标题为文章标题blogInfo.value.title
+  document.title = blogInfo.value.title;
   await nextTick(() => {
     Prism.highlightAll();
   });
@@ -501,6 +503,11 @@ const searchKeyword = (keyword) => {
 
   .main {
     width: 100vw;
+
+    &-hr {
+      // display: none!important;
+      height: 20px;
+    }
 
     // background-color: pink;
     &-body {
