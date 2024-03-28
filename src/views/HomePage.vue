@@ -46,8 +46,8 @@
               :key="blog.id"
               :title="blog.title"
               class="main-body-l-item"
-              @click="toDetail(blog)"
-            >
+              :class="{ 'highlight-blog': blog.status === 1 }"
+              @click="toDetail(blog)" >
               <blockquote class="contentStyle">
                 <code>
                   {{ blog.content + "..." }}
@@ -717,5 +717,10 @@ const searchKeyword = (keyword) => {
 .nav-new-title:hover::before {
   transform-origin: bottom left;
   transform: scaleX(1);
+}
+
+.highlight-blog {
+  // 下边框
+  border-right:  2px solid #18a058;
 }
 </style>

@@ -66,18 +66,24 @@
               :options="categoryOptions"
             />
           </n-form-item>
+          <n-form-item label="状态">
+            <n-select
+              v-model:value="addArticleData.status"
+              :options="statusOptions"
+            />
+          </n-form-item>
           <n-form-item label="内容">
             <rich-text-editor
               v-model="addArticleData.content"
             ></rich-text-editor>
           </n-form-item>
 
-          <n-button tertiary type="info" @click="add"> 添加文章 </n-button>
+          <n-button tertiary type="info" @click="add"> 确认添加 </n-button>
         </n-form>
       </n-tab-pane>
       <n-tab-pane name="update" tab="修改文章" :disabled="true">
         <n-form ref="updateForm">
-          <n-form-item :label="'标题' + '  (ID : ' + updateArticle.id + ')'">
+          <n-form-item :label="'标题' + '  [' + updateArticle.id + ']'">
             <n-input
               v-model:value="updateArticle.title"
               placeholder="请输入标题"
@@ -89,6 +95,12 @@
               :options="categoryOptions"
             />
           </n-form-item>
+          <n-form-item label="状态">
+            <n-select
+              v-model:value="updateArticle.status"
+              :options="statusOptions"
+            />
+          </n-form-item>
           <n-form-item label="内容">
             <rich-text-editor
               :height="'350px'"
@@ -96,8 +108,63 @@
             ></rich-text-editor>
           </n-form-item>
 
-          <n-button tertiary type="info" @click="update"> 修改文章 </n-button>
+          <n-button tertiary type="info" @click="update"> 确认修改 </n-button>
         </n-form>
+      </n-tab-pane>
+      <n-tab-pane name="delete" tab="回收站" :disabled="false">
+        <n-card title="回收站">
+          <n-space>
+            <n-button type="error">清空回收站</n-button>
+          </n-space>
+        </n-card>
+        <hr />
+        <div
+          v-for="blog in blogListInfo"
+          :key="blog.id"
+          style="margin-bottom: 10px"
+          @click="goArticle(blog)"
+        >
+          <n-card :title="blog.title" hoverable>
+            <template #header-extra> / </template>
+            {{ blog.content }}
+            <template #footer>
+              <n-space align="center">
+                <n-tag :bordered="false">
+                  创建时间：{{ blog.updated_at }}
+                </n-tag>
+                <n-button
+                  type="primary"
+                  ghost
+                  size="small"
+                  @click.stop="toUpdate(blog)"
+                >
+                  修改
+                </n-button>
+                <n-button
+                  ghost
+                  size="small"
+                  @click.stop="toRestore(blog)"
+                >
+                  恢复
+                </n-button>
+              </n-space>
+            </template>
+          </n-card>
+        </div>
+        <n-space v-if="blogListInfo.length > 0">
+          <div
+            v-for="pageNum in pageInfo.pageCount"
+            :key="pageNum"
+            @click="toPage(pageNum)"
+          >
+            <n-button
+              ghost
+              :type="pageNum == pageInfo.page ? 'info' : 'default'"
+            >
+              {{ pageNum }}
+            </n-button>
+          </div>
+        </n-space>
       </n-tab-pane>
     </n-tabs>
   </n-card>
@@ -127,6 +194,7 @@ const addArticleData = reactive({
   category_id: null,
   title: "",
   content: "",
+  status: 0,
 });
 
 const updateArticle = reactive({
@@ -134,10 +202,17 @@ const updateArticle = reactive({
   category_id: null,
   title: "",
   content: "",
+  status: 0,
 });
 
 const categoryOptions = ref([]);
+const statusOptions = ref([
+  { label: "展示", value: 0 },
+  { label: "置顶", value: 1 },
+  { label: "删除", value: 2 },
+]);
 const blogListInfo = ref([]);
+const restoreBlogListInfo = ref([]);
 const tabValue = ref("list");
 
 const pageInfo = reactive({
@@ -159,6 +234,13 @@ const getArticles = async () => {
   pageInfo.pageCount = res.pagination.totalPages;
   pageInfo.count = res.pagination.total;
 };
+
+// const getRestoreArticles = async () => {
+//   let res = await getArticleList(pageInfo);
+//   restoreBlogListInfo.value = res.data;
+//   pageInfo.pageCount = res.pagination.totalPages;
+//   pageInfo.count = res.pagination.total;
+// };
 
 // 获取全部分类
 const getCategories = async () => {
@@ -208,11 +290,12 @@ const goArticle = (blog) => {
 // 获取更新的文章内容
 const toUpdate = async (blog) => {
   let res = await getArticleById(blog.id);
-  let { id, title, content, category_id } = res.data[0];
+  let { id, title, content, category_id, status } = res.data[0];
   updateArticle.id = id;
   updateArticle.title = title;
   updateArticle.content = content;
   updateArticle.category_id = category_id;
+  updateArticle.status = status;
   tabValue.value = "update";
 };
 
