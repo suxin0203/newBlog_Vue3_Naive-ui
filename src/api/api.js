@@ -229,3 +229,37 @@ export function getMusicComments() {
     method: 'get',
   });
 }
+
+// 获取友情链接列表
+export function getLinksList() {
+  return request({
+    url: '/friendslink/',
+    method: 'get',
+  })
+}
+
+// 新增友情链接
+export function addLink(data) {
+  return request({
+    url: '/friendslink/token/',
+    method: 'post',
+    data,
+  })
+}
+
+// 修改友情链接
+export function updateLinkById(id, data) {
+  return request({
+    url: `/friendslink/token/${id}`,
+    method: 'put',
+    data,
+  })
+}
+
+// 删除友情链接
+export function deleteLinkById(id) {
+  return request({
+    url: `/friendslink/token/${id}`,
+    method: 'delete',
+  })
+}

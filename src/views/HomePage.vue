@@ -47,7 +47,8 @@
               :title="blog.title"
               class="main-body-l-item"
               :class="{ 'highlight-blog': blog.status === 1 }"
-              @click="toDetail(blog)" >
+              @click="toDetail(blog)"
+            >
               <blockquote class="contentStyle">
                 <code>
                   {{ blog.content + "..." }}
@@ -103,10 +104,15 @@
               </n-card>
               <n-card title="🔗 友链" hoverable>
                 <n-space>
-                  <a v-for="i in friendUrl" :key="i.id" :href="i.url">
-                    <n-button quaternary type="primary">
-                      {{ i.name }}
-                    </n-button>
+                  <a v-for="i in friendUrl" :key="i.link_id" :href="i.blog_url">
+                    <n-popover trigger="hover">
+                      <template #trigger>
+                        <n-button quaternary type="primary">
+                          {{ i.blog_name }}
+                        </n-button>
+                      </template>
+                      <span> {{ i.blog_theme }}</span>
+                    </n-popover>
                   </a>
                 </n-space>
               </n-card>
@@ -190,6 +196,7 @@ import {
   getArticleList,
   getOtherswitch,
   getMusicComments,
+  getLinksList,
 } from "@/api/api";
 
 const adminStore = AdminStore();
@@ -251,6 +258,7 @@ const friendUrl = ref([
 onMounted(async () => {
   await getCategories();
   getArtiles();
+  getFriendslink();
   getMusicComment();
 });
 
@@ -260,6 +268,12 @@ const gohome = () => {
 
 const toMsg = () => {
   router.push("/sendmsg"); //跳转到留言页面
+};
+
+// 获取友链
+const getFriendslink = async () => {
+  let res = await getLinksList();
+  friendUrl.value = res.data;
 };
 
 // 播放音乐
@@ -721,6 +735,6 @@ const searchKeyword = (keyword) => {
 
 .highlight-blog {
   // 下边框
-  border-right:  2px solid #18a058;
+  border-right: 2px solid #18a058;
 }
 </style>
