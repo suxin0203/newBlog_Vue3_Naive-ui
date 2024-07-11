@@ -37,7 +37,7 @@ watch(
 
 <style lang="less" scoped>
 #Myaudio {
-  width: 288px;
+  width: 100%;
   background-color: #f1f3f4;
 }
 </style>

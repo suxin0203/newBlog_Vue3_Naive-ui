@@ -17,7 +17,7 @@
           <div class="card" @click="toMsg()">
             <div class="bg">
               <span @click="toMsg()">点此留言版</span>
-              <span>🤡广告位招租...🤡</span>
+              <span>广告位招租...</span>
             </div>
             <div class="blob"></div>
           </div>
@@ -90,7 +90,11 @@
                   >
                 </div>
               </n-card>
-              <n-card title="🏷️ 分类" hoverable>
+              <n-card
+                title="🏷️ 分类"
+                hoverable
+                v-if="categoryOptions.length > 0"
+              >
                 <n-space>
                   <n-tag
                     :bordered="false"
@@ -102,7 +106,7 @@
                   </n-tag>
                 </n-space>
               </n-card>
-              <n-card title="🔗 友链" hoverable>
+              <n-card title="🔗 友链" hoverable v-if="friendUrl.length > 0">
                 <n-space>
                   <a v-for="i in friendUrl" :key="i.link_id" :href="i.blog_url">
                     <n-popover trigger="hover">
@@ -116,10 +120,16 @@
                   </a>
                 </n-space>
               </n-card>
-              <n-card title="📖 网易热评" embedded :bordered="false" hoverable>
+              <n-card
+                title="📖 网易热评"
+                embedded
+                :bordered="false"
+                hoverable
+                v-if="musicSwitch.url"
+              >
                 <n-space>
                   <n-gradient-text :size="16" type="success">
-                    《{{ musicSwitch.name }}》
+                    {{ musicSwitch.name }}
                   </n-gradient-text>
                   <span>
                     <n-tag :bordered="false" type="info"
@@ -139,6 +149,7 @@
                       下一条
                     </n-button>
                     <n-button
+                      :loading="loadingRef"
                       type="primary"
                       ghost
                       size="small"
@@ -151,6 +162,12 @@
                 </n-space>
               </n-card>
               <MusicPlayer :musicData="musicSwitch" v-show="showMyaudio" />
+              <!-- <n-pagination
+                style="width: 100%"
+                v-model:page="pageInfo.page"
+                :page-count="pageInfo.totalPages"
+                simple
+              /> -->
             </n-space>
           </div>
         </div>
@@ -161,8 +178,13 @@
         class="fenye"
         v-model:page="pageInfo.page"
         v-model:page-count="pageInfo.totalPages"
-        :default-page-size="10"
-        :page-sizes="[5, 10, 20, 50]"
+        :default-page-size="5"
+        :page-sizes="[
+          { label: '5 / 页', value: 5 },
+          { label: '10 / 页', value: 10 },
+          { label: '20 / 页', value: 20 },
+          { label: '50 / 页', value: 50 },
+        ]"
         show-size-picker
         @update:page-size="changePageSize"
         @update:page="getArtiles()"
@@ -220,40 +242,12 @@ const MusicalNotesOutlineIcon = () => {
 };
 const loadingRef = ref(false);
 const displayUsername = ref(
-  (nickname || username || "小苏的个人闲聊站") + (is_root ? "👑" : "")
+  (nickname || username || "未登录") + (is_root ? "👑" : "")
 );
 const displayAvatarUrl = ref(
-  avatar_url ||
-    "https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474" ||
-    "https://www.suxin23.cn/images/avatar.jpg"
+  avatar_url || "https://q2.qlogo.cn/headimg_dl?spec=100&dst_uin=208082474"
 );
-const friendUrl = ref([
-  {
-    id: 1,
-    name: "苏辛博客(原)",
-    url: "http://www.suxin23.cn/",
-  },
-  {
-    id: 2,
-    name: "GitHub-suxin",
-    url: "https://github.com/suxin0203",
-  },
-  {
-    id: 3,
-    name: "Naive UI",
-    url: "https://www.naiveui.com/",
-  },
-  {
-    id: 4,
-    name: "天界程序员",
-    url: "https://www.itbooks.work/",
-  },
-  {
-    id: 5,
-    name: "百度一下",
-    url: "https://www.baidu.com/",
-  },
-]);
+const friendUrl = ref([]);
 
 onMounted(async () => {
   await getCategories();
@@ -278,7 +272,11 @@ const getFriendslink = async () => {
 
 // 播放音乐
 const playmusic = (url) => {
+  loadingRef.value = true;
   showMyaudio.value = true;
+  setTimeout(() => {
+    loadingRef.value = false;
+  }, 3000);
   // let audio = document.getElementById("Myaudio");
   // audio.src = url;
   // audio.play();
@@ -380,12 +378,12 @@ const searchKeyword = (keyword) => {
   margin: 10px 0;
   background-color: #f1f1f1;
 }
-.header2 {
-  background-color: #fff;
-  a {
-    color: gray !important;
-  }
-}
+// .header2 {
+//   background-color: #fff;
+//   a {
+//     color: gray !important;
+//   }
+// }
 .lbt {
   position: relative;
   width: 100%;
@@ -485,14 +483,14 @@ const searchKeyword = (keyword) => {
     }
   }
 }
-.carousel1 {
-  margin-top: -80px;
-}
-.carousel-img {
-  width: 100%;
-  height: 500px;
-  object-fit: cover;
-}
+// .carousel1 {
+//   margin-top: -80px;
+// }
+// .carousel-img {
+//   width: 100%;
+//   height: 500px;
+//   object-fit: cover;
+// }
 
 .myavatar {
   width: 100%;
@@ -508,74 +506,70 @@ const searchKeyword = (keyword) => {
   position: sticky;
   top: 100px;
 }
-.header {
-  position: sticky;
-  top: 0px;
-  width: 100%;
-  box-shadow: 0.5px 0.5px 5px #888888;
-  z-index: 99;
-  // background-image: radial-gradient(transparent 1px, #fff 4px);
-  // background-size: 8px 8px;
-  // backdrop-filter: saturate(50%) blur(4px);
-  // background-color: rgba(255, 255, 255, 0.8);
-}
-.nav-new {
-  height: 80px;
-  width: 1200px;
-  display: flex;
-  margin: 0 auto;
-  justify-content: space-between;
+// .header {
+//   position: sticky;
+//   top: 0px;
+//   width: 100%;
+//   box-shadow: 0.5px 0.5px 5px #888888;
+//   z-index: 99;
+// }
+// .nav-new {
+//   height: 80px;
+//   width: 1200px;
+//   display: flex;
+//   margin: 0 auto;
+//   justify-content: space-between;
 
-  &-title :hover {
-    color: #36ad6a !important;
-  }
+//   &-title :hover {
+//     color: #36ad6a !important;
+//   }
 
-  // &-title :hover::after {
-  //   opacity: 1;
-  // }
-  &-l {
-    height: 80px;
-    display: flex;
-    &-menu {
-      width: 280px;
-      display: flex;
-      justify-content: space-around;
-      align-items: center;
-      a {
-        line-height: 70px;
-        font-size: 18px;
-        color: #fff;
-      }
-    }
-  }
+//   // &-title :hover::after {
+//   //   opacity: 1;
+//   // }
+//   &-l {
+//     height: 80px;
+//     display: flex;
+//     &-menu {
+//       width: 280px;
+//       display: flex;
+//       justify-content: space-around;
+//       align-items: center;
+//       a {
+//         line-height: 70px;
+//         font-size: 18px;
+//         color: #fff;
+//       }
+//     }
+//   }
 
-  .logo {
-    height: 80px;
-    display: flex;
-    align-items: center;
-    img {
-      height: 40px;
-      width: auto;
-      background-color: gray;
-      border-radius: 4px;
-    }
-  }
+//   .logo {
+//     height: 80px;
+//     display: flex;
+//     align-items: center;
+//     img {
+//       height: 40px;
+//       width: auto;
+//       background-color: gray;
+//       border-radius: 4px;
+//     }
+//   }
 
-  &-r {
-    // background-color: greenyellow;
-    height: 80px;
-    display: flex;
-    justify-content: right;
-    align-items: center;
-    width: 40%;
-    &-search {
-      width: 100%;
-      height: 80px;
-      display: flex;
-      align-items: center;
-    }
-  }
-}
+//   &-r {
+//     // background-color: greenyellow;
+//     height: 80px;
+//     display: flex;
+//     justify-content: right;
+//     align-items: center;
+//     width: 40%;
+//     &-search {
+//       width: 100%;
+//       height: 80px;
+//       display: flex;
+//       align-items: center;
+//     }
+//   }
+// }
 
 .create-time {
   font-size: 14px;
@@ -606,9 +600,9 @@ const searchKeyword = (keyword) => {
   margin-top: 10px;
 }
 @media screen and (max-width: 1250px) {
-  .nav-new {
-    width: 90vw;
-  }
+  // .nav-new {
+  //   width: 90vw;
+  // }
   .main {
     width: 90vw;
   }
@@ -617,9 +611,9 @@ const searchKeyword = (keyword) => {
   .main {
     width: 95vw;
   }
-  .nav-new {
-    width: 95vw;
-  }
+  // .nav-new {
+  //   width: 95vw;
+  // }
   .main-body {
     &-l {
       flex: 1;
@@ -644,49 +638,49 @@ const searchKeyword = (keyword) => {
   .lbt {
     width: 100vw;
   }
-  .header {
-    height: 120px;
-    width: 100vw;
-    background-color: #fff;
-  }
-  .nav-new {
-    height: 120px;
-    display: block;
-    width: 100vw;
-  }
-  .nav-new-l {
-    width: 100vw;
-    height: 60px;
-    display: flex;
-    &-menu {
-      // width: 250px;
-      flex: 1;
-      a {
-        line-height: 70px;
-        font-size: 18px;
-        color: #888888;
-      }
-    }
-  }
-  .nav-new-l .logo {
-    height: 60px;
-    margin-left: 10px;
-  }
-  .nav-new-r {
-    width: 100vw;
-    height: 60px;
+  // .header {
+  //   height: 120px;
+  //   width: 100vw;
+  //   background-color: #fff;
+  // }
+  // .nav-new {
+  //   height: 120px;
+  //   display: block;
+  //   width: 100vw;
+  // }
+  // .nav-new-l {
+  //   width: 100vw;
+  //   height: 60px;
+  //   display: flex;
+  //   &-menu {
+  //     // width: 250px;
+  //     flex: 1;
+  //     a {
+  //       line-height: 70px;
+  //       font-size: 18px;
+  //       color: #888888;
+  //     }
+  //   }
+  // }
+  // .nav-new-l .logo {
+  //   height: 60px;
+  //   margin-left: 10px;
+  // }
+  // .nav-new-r {
+  //   width: 100vw;
+  //   height: 60px;
 
-    &-search {
-      width: 90vw;
-      margin: 0 auto;
-      height: 60px;
-      display: flex;
-      align-items: center;
-    }
-  }
-  .carousel1 {
-    height: 500px;
-  }
+  //   &-search {
+  //     width: 90vw;
+  //     margin: 0 auto;
+  //     height: 60px;
+  //     display: flex;
+  //     align-items: center;
+  //   }
+  // }
+  // .carousel1 {
+  //   height: 500px;
+  // }
 
   .main {
     width: 100vw;
@@ -697,6 +691,9 @@ const searchKeyword = (keyword) => {
       &-l {
         width: 95vw;
         margin: 0 auto;
+        .card {
+          display: none;
+        }
       }
       &-r {
         width: 95vw;
@@ -711,27 +708,27 @@ const searchKeyword = (keyword) => {
   }
 }
 
-.nav-new-title {
-  position: relative;
-}
+// .nav-new-title {
+//   position: relative;
+// }
 
-.nav-new-title::before {
-  content: "";
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  height: 4px;
-  background-color: #36ad6a;
-  transform-origin: bottom right;
-  transform: scaleX(0);
-  transition: transform 0.5s ease;
-}
+// .nav-new-title::before {
+//   content: "";
+//   position: absolute;
+//   bottom: 0;
+//   left: 0;
+//   right: 0;
+//   height: 4px;
+//   background-color: #36ad6a;
+//   transform-origin: bottom right;
+//   transform: scaleX(0);
+//   transition: transform 0.5s ease;
+// }
 
-.nav-new-title:hover::before {
-  transform-origin: bottom left;
-  transform: scaleX(1);
-}
+// .nav-new-title:hover::before {
+//   transform-origin: bottom left;
+//   transform: scaleX(1);
+// }
 
 .highlight-blog {
   // 下边框

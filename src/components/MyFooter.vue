@@ -10,7 +10,9 @@
           <p>Perhaps, it will be the best blog management system!</p>
         </div>
       </div>
-      <div class="footer-main-r">蜀ICP备2022022751号-1</div>
+      <div class="footer-main-r">
+        <a href="">蜀ICP备2022022757</a>
+      </div>
     </div>
   </div>
 </template>

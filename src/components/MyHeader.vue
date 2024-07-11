@@ -1,13 +1,9 @@
 <template>
-  <div
-    class="header"
-    id="top"
-    :class="{ headercolor: isActive, headermohu: isMohu }"
-  >
-    <div class="nav-new">
+  <div class="header" id="top" :class="{ headercolor: isActive }">
+    <div class="nav-new" :class="{ headermohu: isMohu }">
       <div class="nav-new-l">
         <div class="logo" @click="toHome">
-          <img src="@/assets/images/logo3.png" alt="" />
+          <img :src="logo" alt="logo" />
         </div>
         <div class="nav-new-l-menu">
           <div class="nav-new-title" @click="toHome">
@@ -62,6 +58,9 @@
 <script setup>
 import { ref, onMounted, computed, watch } from "vue";
 import { router, routes } from "@/common/router.js";
+
+// const logo = require("@/assets/images/logo3.png");
+import logo from "@/assets/images/logo3.png";
 
 const props = defineProps({
   options: {
@@ -169,6 +168,7 @@ const toArticle = (blog) => {
 .nav-new {
   height: 80px;
   width: 1200px;
+  padding: 0 20px;
   display: flex;
   margin: 0 auto;
   justify-content: space-between;
@@ -209,13 +209,14 @@ const toArticle = (blog) => {
     width: 65%;
     &-menu {
       // width: 280px;
-      width: 330px;
+      width: 360px;
       display: flex;
       justify-content: space-around;
       align-items: center;
       a {
         line-height: 70px;
-        font-size: 18px;
+        font-size: 20px;
+        font-weight: bold;
         color: #fff;
       }
     }
@@ -278,14 +279,15 @@ const toArticle = (blog) => {
     width: 100vw;
   }
   .nav-new-l {
-    width: 100vw;
+    width: 96vw;
+    padding: 0 2vw;
     height: 60px;
     display: flex;
     &-menu {
       // width: 250px;
       flex: 1;
       a {
-        line-height: 70px;
+        line-height: 60px;
         font-size: 18px;
         color: #888888;
       }
@@ -293,14 +295,15 @@ const toArticle = (blog) => {
   }
   .nav-new-l .logo {
     height: 60px;
-    margin-left: 10px;
+    // margin-left: 10px;
   }
   .nav-new-r {
     width: 100vw;
     height: 60px;
-
+    // 透明背景
+    // background-color: rgba(255, 255, 255, 0.5);
     &-search {
-      width: 90vw;
+      width: 95vw;
       margin: 0 auto;
       height: 60px;
       display: flex;

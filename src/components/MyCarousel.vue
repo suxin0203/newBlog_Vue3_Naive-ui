@@ -1,7 +1,7 @@
 <template>
   <div class="carousel1">
     <section style="background: #00b5d1">
-      <n-carousel autoplay draggable>
+      <n-carousel autoplay draggable v-show="fileList.length > 0">
         <img
           class="carousel-img"
           :src="item.href"
@@ -26,7 +26,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
-import { getOtherswitch,getSwiperList } from "@/api/api";
+import { getOtherswitch, getSwiperList } from "@/api/api";
 import { AdminStore } from "@/stores/AdminStore";
 
 const adminStore = AdminStore();
@@ -58,7 +58,7 @@ const getOtherswitchs = async () => {
 .carousel1 {
   margin-top: -80px;
   position: relative;
-  //   height: 500px;
+  height: 500px;
   .carousel-img {
     width: 100%;
     height: 500px;
@@ -136,6 +136,24 @@ section .wave.wave4 {
   }
   100% {
     background-position-x: -1000px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .carousel1 {
+    // height: 300px!important;
+    margin-top: 0px;
+    .carousel-img {
+      height: 300px;
+    }
+    .title-h1 {
+      font-size: 18px;
+    }
+  }
+  section .wave {
+    display: none;
+    // height: 50px;
+    // background-size: 300px 50px;
   }
 }
 </style>
