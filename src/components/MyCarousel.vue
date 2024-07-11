@@ -141,7 +141,7 @@ section .wave.wave4 {
 
 @media screen and (max-width: 600px) {
   .carousel1 {
-    // height: 300px!important;
+    height: 300px;
     margin-top: 0px;
     .carousel-img {
       height: 300px;

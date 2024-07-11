@@ -274,6 +274,7 @@ const toArticle = (blog) => {
     background-color: #fff;
   }
   .nav-new {
+    padding: 0px;
     height: 120px;
     display: block;
     width: 100vw;
