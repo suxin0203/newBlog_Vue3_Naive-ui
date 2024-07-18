@@ -6,6 +6,16 @@ let routes = [
   { path: "/", name: "home", component: () => import("@/views/HomePage.vue") },
   { path: "/articles", name: "articles", component: () => import("@/views/ArticlePage.vue") },
   {
+    path: "/show",
+    name: "show",
+    component: () => import("@/views/BulletinBoard/index.vue"),
+  },
+  {
+    path: "/table",
+    name: "table",
+    component: () => import("@/views/ActivityTbale/index.vue"),
+  },
+  {
     path: "/sendmsg",
     name: "sendmsg",
     component: () => import("@/views/Sendmsg.vue"),
