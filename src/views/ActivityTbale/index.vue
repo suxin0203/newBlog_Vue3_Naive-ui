@@ -79,6 +79,8 @@ const formValue = ref({
   token: "",
   content: "",
   remarks: "",
+  limit: 10,
+  page: 1,
 });
 
 const rules = {
@@ -131,40 +133,26 @@ let data = ref([]);
 let formRef = ref(null);
 
 let pagination = ref({
-  pageSize: 999,
-  total: 0,
-  current: 1,
+  page: 1,
+  pageSize: 10,
+  itemCount : 0,
+  pageCount: 0,
+  pageSizes: [10, 20, 30],
   showSizeChanger: true,
-  showQuickJumper: true,
-  // onChange: (page) => {
-  //   console.log(page);
-  //   let obj = {
-  //     limit: pagination.value.pageSize,
-  //     page: page,
-  //   };
-  //   getActivityList(obj).then((res) => {
-  //     console.log(res);
-  //     data.value = res.data;
-  //     pagination.value.total = res.pagination.total;
-  //     pagination.value.current = res.pagination.page;
-  //     pagination.value.pageSize = res.pagination.limit;
-  //   });
-  // },
-  // onShowSizeChange: (current, size) => {
-  //   console.log(current, size);
-  //   let obj = {
-  //     limit: size,
-  //     page: current,
-  //   };
-  //   getActivityList(obj).then((res) => {
-  //     console.log(res);
-  //     data.value = res.data;
-  //     pagination.value.total = res.pagination.total;
-  //     pagination.value.current = res.pagination.page;
-  //     pagination.value.pageSize = res.pagination.limit;
-  //   });
-  // },
-  showTotal: (total) => `共 ${total} 条`,
+  // showQuickJumper: true,
+  onChange: (page) => {
+    console.log(page);
+    pagination.value.page = page;
+    formValue.value.page = page;
+    handleValidateClick();
+  },
+  onSizeChange: (size) => {
+    console.log(size);
+    pagination.value.pageSize = size;
+    formValue.value.limit = size;
+    handleValidateClick();
+  },
+  showTotal: (itemCount) => `共 ${itemCount} 条`,
 });
 
 const handleValidateClick = () => {
@@ -173,12 +161,8 @@ const handleValidateClick = () => {
   // console.log("验证成功");
   // 模糊查询
   getActivityList(formValue.value).then((res) => {
-    console.log(res);
     data.value = res.data;
-    console.log(res.data.pagination);
-    pagination.value.total = res.pagination.total;
-    // pagination.value.current = res.pagination.page;
-    // pagination.value.pageSize = res.pagination.limit;
+    pagination.value.itemCount = res.pagination.total;
   });
   // } else {
   //   console.log("验证失败");
@@ -189,14 +173,12 @@ const handleValidateClick = () => {
 onMounted(() => {
   let obj = {
     limit: pagination.value.pageSize,
-    page: pagination.value.current,
+    page: pagination.value.page,
   };
-  getActivityList(obj).then((res) => {
-    console.log(res);
+  getActivityList(formValue.value).then((res) => {
     data.value = res.data;
-    pagination.value.total = res.pagination.total;
-    // pagination.value.current = res.pagination.page;
-    // pagination.value.pageSize = res.pagination.limit;
+    pagination.value.itemCount = res.pagination.total;
+
   });
 });
 </script>
