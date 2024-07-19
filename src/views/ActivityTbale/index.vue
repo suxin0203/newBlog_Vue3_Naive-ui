@@ -45,7 +45,7 @@
                 <n-input v-model:value="formValue.remarks" placeholder="备注" />
               </n-form-item>
               <n-form-item>
-                <n-button attr-type="button" @click="handleValidateClick">
+                <n-button attr-type="button" @click="fetchActivityList">
                   搜索
                 </n-button>
               </n-form-item>
@@ -67,13 +67,15 @@
   </n-card>
 </template>
 
-<script scoped setup>
+<script setup>
 import { ref, onMounted } from "vue";
 import { getActivityList } from "@/api/api";
 
+// State variables
 const showRail = ref(true);
 const showBackground = ref(true);
-
+const data = ref([]);
+const formRef = ref(null);
 const formValue = ref({
   name: "",
   token: "",
@@ -81,6 +83,26 @@ const formValue = ref({
   remarks: "",
   limit: 10,
   page: 1,
+});
+
+const pagination = ref({
+  page: 1,
+  pageSize: 10,
+  itemCount: 0,
+  pageCount: 0,
+  pageSizes: [10, 20, 30],
+  showSizeChanger: true,
+  onChange: (page) => {
+    pagination.value.page = page;
+    formValue.value.page = page;
+    fetchActivityList();
+  },
+  onSizeChange: (size) => {
+    pagination.value.pageSize = size;
+    formValue.value.limit = size;
+    fetchActivityList();
+  },
+  showTotal: (itemCount) => `共 ${itemCount} 条`,
 });
 
 const rules = {
@@ -93,93 +115,26 @@ const rules = {
 const size = "small";
 
 const columns = [
-  {
-    title: "ID",
-    key: "id",
-    width: "50px",
-  },
-  {
-    title: "项目",
-    key: "name",
-    width: "100px",
-  },
-  {
-    title: "Token",
-    key: "token",
-    width: "400px",
-  },
-  {
-    title: "内容",
-    key: "content",
-  },
-  {
-    title: "时间",
-    key: "created_at",
-    width: "200px",
-  },
-  {
-    title: "注释",
-    key: "remarks",
-    width: "100px",
-  },
-  {
-    title: "值",
-    key: "value",
-    width: "50px",
-  },
+  { title: "ID", key: "id", width: "50px" },
+  { title: "项目", key: "name", width: "100px" },
+  { title: "Token", key: "token", width: "400px" },
+  { title: "内容", key: "content" },
+  { title: "时间", key: "created_at", width: "200px" },
+  { title: "注释", key: "remarks", width: "100px" },
+  { title: "值", key: "value", width: "50px" },
 ];
 
-let data = ref([]);
-let formRef = ref(null);
-
-let pagination = ref({
-  page: 1,
-  pageSize: 10,
-  itemCount : 0,
-  pageCount: 0,
-  pageSizes: [10, 20, 30],
-  showSizeChanger: true,
-  // showQuickJumper: true,
-  onChange: (page) => {
-    console.log(page);
-    pagination.value.page = page;
-    formValue.value.page = page;
-    handleValidateClick();
-  },
-  onSizeChange: (size) => {
-    console.log(size);
-    pagination.value.pageSize = size;
-    formValue.value.limit = size;
-    handleValidateClick();
-  },
-  showTotal: (itemCount) => `共 ${itemCount} 条`,
-});
-
-const handleValidateClick = () => {
-  // formRef.value.validate((valid) => {
-  // if (valid) {
-  // console.log("验证成功");
-  // 模糊查询
+const fetchActivityList = () => {
   getActivityList(formValue.value).then((res) => {
     data.value = res.data;
     pagination.value.itemCount = res.pagination.total;
+  }).catch((error) => {
+    console.error("Error fetching activity list:", error);
   });
-  // } else {
-  //   console.log("验证失败");
-  // }
-  // });
 };
 
 onMounted(() => {
-  let obj = {
-    limit: pagination.value.pageSize,
-    page: pagination.value.page,
-  };
-  getActivityList(formValue.value).then((res) => {
-    data.value = res.data;
-    pagination.value.itemCount = res.pagination.total;
-
-  });
+  fetchActivityList();
 });
 </script>
 
