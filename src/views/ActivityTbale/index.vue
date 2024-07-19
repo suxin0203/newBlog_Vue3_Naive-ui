@@ -26,27 +26,27 @@
               :rules="rules"
               :size="size"
             >
-              <n-form-item label="姓名" path="user.name">
+              <n-form-item label="活动名称" path="name">
                 <n-input
-                  v-model:value="formValue.user.name"
-                  placeholder="输入姓名"
+                  v-model:value="formValue.name"
+                  placeholder="输入活动名称"
                 />
               </n-form-item>
-              <n-form-item label="年龄" path="user.age">
+              <n-form-item label="Token" path="token">
                 <n-input
-                  v-model:value="formValue.user.age"
-                  placeholder="输入年龄"
+                  v-model:value="formValue.token"
+                  placeholder="输入Token"
                 />
               </n-form-item>
-              <n-form-item label="电话号码" path="phone">
-                <n-input
-                  v-model:value="formValue.phone"
-                  placeholder="电话号码"
-                />
+              <n-form-item label="内容" path="content">
+                <n-input v-model:value="formValue.content" placeholder="内容" />
+              </n-form-item>
+              <n-form-item label="备注" path="remarks">
+                <n-input v-model:value="formValue.remarks" placeholder="备注" />
               </n-form-item>
               <n-form-item>
                 <n-button attr-type="button" @click="handleValidateClick">
-                  验证
+                  搜索
                 </n-button>
               </n-form-item>
             </n-form>
@@ -57,6 +57,7 @@
               :columns="columns"
               :data="data"
               :pagination="pagination"
+              :size="size"
               striped
             />
           </n-flex>
@@ -74,19 +75,17 @@ const showRail = ref(true);
 const showBackground = ref(true);
 
 const formValue = ref({
-  user: {
-    name: "",
-    age: "",
-  },
-  phone: "",
+  name: "",
+  token: "",
+  content: "",
+  remarks: "",
 });
 
 const rules = {
-  user: {
-    name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
-    age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
-  },
-  phone: [{ required: true, message: "请输入电话号码", trigger: "blur" }],
+  name: [{ required: false, message: "请输入活动名称", trigger: "blur" }],
+  token: [{ required: false, message: "请输入Token", trigger: "blur" }],
+  content: [{ required: false, message: "请输入内容", trigger: "blur" }],
+  remarks: [{ required: false, message: "请输入备注", trigger: "blur" }],
 };
 
 const size = "small";
@@ -129,31 +128,75 @@ const columns = [
 ];
 
 let data = ref([]);
+let formRef = ref(null);
 
 let pagination = ref({
-  pageSize: 5,
+  pageSize: 999,
   total: 0,
   current: 1,
   showSizeChanger: true,
   showQuickJumper: true,
+  // onChange: (page) => {
+  //   console.log(page);
+  //   let obj = {
+  //     limit: pagination.value.pageSize,
+  //     page: page,
+  //   };
+  //   getActivityList(obj).then((res) => {
+  //     console.log(res);
+  //     data.value = res.data;
+  //     pagination.value.total = res.pagination.total;
+  //     pagination.value.current = res.pagination.page;
+  //     pagination.value.pageSize = res.pagination.limit;
+  //   });
+  // },
+  // onShowSizeChange: (current, size) => {
+  //   console.log(current, size);
+  //   let obj = {
+  //     limit: size,
+  //     page: current,
+  //   };
+  //   getActivityList(obj).then((res) => {
+  //     console.log(res);
+  //     data.value = res.data;
+  //     pagination.value.total = res.pagination.total;
+  //     pagination.value.current = res.pagination.page;
+  //     pagination.value.pageSize = res.pagination.limit;
+  //   });
+  // },
   showTotal: (total) => `共 ${total} 条`,
 });
 
 const handleValidateClick = () => {
-  formRef.value.validate((valid) => {
-    if (valid) {
-      console.log("验证成功");
-    } else {
-      console.log("验证失败");
-    }
+  // formRef.value.validate((valid) => {
+  // if (valid) {
+  // console.log("验证成功");
+  // 模糊查询
+  getActivityList(formValue.value).then((res) => {
+    console.log(res);
+    data.value = res.data;
+    console.log(res.data.pagination);
+    pagination.value.total = res.pagination.total;
+    // pagination.value.current = res.pagination.page;
+    // pagination.value.pageSize = res.pagination.limit;
   });
+  // } else {
+  //   console.log("验证失败");
+  // }
+  // });
 };
 
 onMounted(() => {
-  getActivityList().then((res) => {
+  let obj = {
+    limit: pagination.value.pageSize,
+    page: pagination.value.current,
+  };
+  getActivityList(obj).then((res) => {
     console.log(res);
     data.value = res.data;
-    pagination.value.total = res.data.length;
+    pagination.value.total = res.pagination.total;
+    // pagination.value.current = res.pagination.page;
+    // pagination.value.pageSize = res.pagination.limit;
   });
 });
 </script>

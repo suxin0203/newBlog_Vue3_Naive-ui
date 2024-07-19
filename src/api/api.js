@@ -266,9 +266,10 @@ export function deleteLinkById(id) {
 
 
 // 活动列表/activity/
-export function getActivityList() {
+export function getActivityList(params) {
   return request({
     url: '/activity/',
     method: 'get',
+    params
   })
 }
