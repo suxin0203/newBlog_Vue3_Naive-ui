@@ -24,7 +24,6 @@
               label-width="auto"
               :model="formValue"
               :rules="rules"
-              :size="size"
             >
               <n-form-item label="活动名称" path="name">
                 <n-input
@@ -50,16 +49,19 @@
                 </n-button>
               </n-form-item>
             </n-form>
-            <n-data-table
-              :max-height="'calc(100vh - 240px)'"
-              :bordered="false"
-              :single-line="false"
-              :columns="columns"
-              :data="data"
-              :pagination="pagination"
-              :size="size"
-              striped
-            />
+            <n-spin :show="loading">
+              <n-data-table
+                style="height: calc(100vh - 152px)"
+                remote
+                :max-height="'calc(100vh - 240px)'"
+                :bordered="false"
+                :single-line="false"
+                :columns="columns"
+                :data="data"
+                :pagination="pagination"
+                striped
+              />
+            </n-spin>
           </n-flex>
         </div>
       </n-gi>
@@ -68,7 +70,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, reactive, onMounted } from "vue";
 import { getActivityList } from "@/api/api";
 
 // State variables
@@ -81,28 +83,30 @@ const formValue = ref({
   token: "",
   content: "",
   remarks: "",
-  limit: 10,
+  limit: 50,
   page: 1,
 });
 
-const pagination = ref({
+let loading = ref(false);
+
+const pagination = reactive({
   page: 1,
-  pageSize: 10,
+  pageSize: 50,
   itemCount: 0,
-  pageCount: 0,
-  pageSizes: [10, 20, 30],
-  showSizeChanger: true,
+  showSizePicker: true,
+  pageSizes: [10, 20, 30, 40, 50],
   onChange: (page) => {
-    pagination.value.page = page;
+    pagination.page = page;
     formValue.value.page = page;
     fetchActivityList();
   },
-  onSizeChange: (size) => {
-    pagination.value.pageSize = size;
-    formValue.value.limit = size;
+  onUpdatePageSize: (pageSize) => {
+    pagination.page = 1;
+    pagination.pageSize = pageSize;
+    formValue.value.page = 1;
+    formValue.value.limit = pageSize;
     fetchActivityList();
   },
-  showTotal: (itemCount) => `共 ${itemCount} 条`,
 });
 
 const rules = {
@@ -112,25 +116,48 @@ const rules = {
   remarks: [{ required: false, message: "请输入备注", trigger: "blur" }],
 };
 
-const size = "small";
-
 const columns = [
-  { title: "ID", key: "id", width: "50px" },
-  { title: "项目", key: "name", width: "100px" },
-  { title: "Token", key: "token", width: "400px" },
-  { title: "内容", key: "content" },
+  { title: "ID", key: "id", width: "80px", align: "center" },
+  {
+    title: "项目",
+    key: "name",
+    width: "150px",
+    align: "center",
+    resizable: true,
+  },
+  {
+    title: "Token",
+    key: "token",
+    width: "400px",
+    resizable: true,
+    //
+    ellipsis: { tooltip: { placement: "top", "width": "40vw" } },
+  },
+  {
+    title: "内容",
+    key: "content",
+    resizable: true,
+    ellipsis: { tooltip: { placement: "top", "width": "30vw" } },
+    expandable: true,
+  },
   { title: "时间", key: "created_at", width: "200px" },
-  { title: "注释", key: "remarks", width: "100px" },
-  { title: "值", key: "value", width: "50px" },
+  {
+    title: "注释",
+    key: "remarks",
+    width: "15  0px",
+    align: "center",
+    resizable: true,
+  },
+  { title: "值", key: "value", width: "50px", align: "center" },
+  // { title: "操作", key: "action", width: "100px", align: "center" },
 ];
 
-const fetchActivityList = () => {
-  getActivityList(formValue.value).then((res) => {
-    data.value = res.data;
-    pagination.value.itemCount = res.pagination.total;
-  }).catch((error) => {
-    console.error("Error fetching activity list:", error);
-  });
+const fetchActivityList = async () => {
+  loading.value = true;
+  let res = await getActivityList(formValue.value);
+  data.value = res.data;
+  pagination.itemCount = res.pagination.total;
+  loading.value = false;
 };
 
 onMounted(() => {
@@ -153,7 +180,7 @@ onMounted(() => {
 }
 .green {
   height: calc(100% - 40px);
-  background-color: rgba(0, 128, 0, 0.24);
+  /* background-color: rgba(0, 128, 0, 0.24); */
   padding: 20px;
 }
 </style>

@@ -42,7 +42,11 @@
                     </span>
                   </div>
                   <div>
-                    <n-icon size="28" :component="AddCircleOutline" @click="addArticle"/>
+                    <n-icon
+                      size="28"
+                      :component="AddCircleOutline"
+                      @click="addArticle"
+                    />
                     <n-divider vertical />
                     <n-button
                       strong
@@ -199,29 +203,30 @@ const menuOptions = [
             RouterLink,
             {
               to: {
-                name: "login",
+                name: "show",
               },
             },
-            { default: () => "退出登录" }
+            { default: () => "大屏展示" }
           ),
-        key: "logout",
+        key: "show",
         icon: renderIcon(CloseCircleOutline),
+        // disabled: true,
       },
-      // {
-      //   label: () =>
-      //     h(
-      //       RouterLink,
-      //       {
-      //         to: {
-      //           name: "datashow",
-      //         },
-      //       },
-      //       { default: () => "数据展示" }
-      //     ),
-      //   key: "datashow",
-      //   icon: renderIcon(CloseCircleOutline),
-      //   disabled: true,
-      // },
+      {
+        label: () =>
+          h(
+            RouterLink,
+            {
+              to: {
+                name: "table",
+              },
+            },
+            { default: () => "数据列表" }
+          ),
+        key: "table",
+        icon: renderIcon(CloseCircleOutline),
+        // disabled: true,
+      },
       {
         label: () =>
           h(
@@ -318,12 +323,11 @@ const addArticle = () => {
     }
   }
   .content {
-  flex: 1;
-  overflow: auto;
-  box-sizing: border-box;
+    flex: 1;
+    overflow: auto;
+    box-sizing: border-box;
+  }
 }
-}
-
 
 @media screen and (max-width: 600px) {
   .main-panel {

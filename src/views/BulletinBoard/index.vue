@@ -16,7 +16,9 @@
         </div>
       </n-gi>
       <n-gi :span="7">
-        <div class="light-green" />
+        <div class="light-green" >
+          <!-- <MenuTest /> -->
+        </div>
       </n-gi>
     </n-grid>
   </n-card>
@@ -29,6 +31,7 @@ import Linear from "@/views/BulletinBoard/components/Line.vue";
 import Bar from "@/views/BulletinBoard/components/Bar.vue";
 import Pie from "@/views/BulletinBoard/components/Pie.vue";
 import ChinaMap from "./components/ChinaMap.vue";
+// import MenuTest from "./components/MenuTest.vue";
 
 const text = ref("http://blog.suxin23.cn");
 </script>

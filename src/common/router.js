@@ -6,6 +6,11 @@ let routes = [
   { path: "/", name: "home", component: () => import("@/views/HomePage.vue") },
   { path: "/articles", name: "articles", component: () => import("@/views/ArticlePage.vue") },
   {
+    path: "/activity",
+    name: "activity",
+    component: () => import("@/views/MobilePage/index.vue"),
+  },
+  {
     path: "/show",
     name: "show",
     component: () => import("@/views/BulletinBoard/index.vue"),

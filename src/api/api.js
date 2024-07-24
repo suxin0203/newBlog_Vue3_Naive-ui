@@ -268,7 +268,25 @@ export function deleteLinkById(id) {
 // 活动列表/activity/
 export function getActivityList(params) {
   return request({
-    url: '/activity/',
+    url: '/activity/token/',
+    method: 'get',
+    params
+  })
+}
+
+// 新增活动项目 （临时）
+export function addActivity(data) {
+  return request({
+    url: '/activity/sign/',
+    method: 'post',
+    data,
+  })
+}
+
+// 活动签到列表/activity/
+export function getActivityListSign(params) {
+  return request({
+    url: '/activity/sign/select',
     method: 'get',
     params
   })
