@@ -63,9 +63,19 @@ let dataList = ref([
 
 let options = {
   title: {
-    text: "中国地图",
+    text: "全 国 撸 毛 热 度 情 况",
     sublink:
       "http://zh.wikipedia.org/wiki/%E9%A6%99%E6%B8%AF%E8%A1%8C%E6%94%BF%E5%8D%80%E5%8A%83#cite_note-12",
+    left: "center",
+    top: "8%",
+    textStyle: {
+      color: "#fff",
+      fontSize: 20 * (window.innerWidth / 1920),
+      // 文字间距
+      textBorderColor: "rgba(0,0,0,0.2)",
+      textBorderWidth: 2,
+      
+    },
   },
   tooltip: {
     trigger: "item",
