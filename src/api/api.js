@@ -286,6 +286,7 @@ export function addActivity(data) {
 // 活动签到列表/activity/
 export function getActivityListSign(params) {
   return request({
+    timeout: 10000,
     url: '/activity/sign/select',
     method: 'get',
     params

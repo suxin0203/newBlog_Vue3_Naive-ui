@@ -28,7 +28,7 @@ let dataList = ref([
   { name: "北京市", value: 290 },
   { name: "天津市", value: 320 },
   { name: "河北省", value: 240 },
-  { name: "山西省", value: 520 },
+  { name: "山西省", value: 120 },
   { name: "内蒙古自治区", value: 120 },
   { name: "辽宁省", value: 210 },
   { name: "吉林省", value: 620 },
@@ -52,7 +52,7 @@ let dataList = ref([
   { name: "云南省", value: 320 },
   { name: "西藏自治区", value: 20 },
   { name: "陕西省", value: 240 },
-  { name: "甘肃省", value: 920 },
+  { name: "甘肃省", value: 120 },
   { name: "青海省", value: 720 },
   { name: "宁夏回族自治区", value: 120 },
   { name: "新疆维吾尔自治区", value: 420 },
@@ -79,7 +79,7 @@ let options = {
   },
   tooltip: {
     trigger: "item",
-    formatter: "{b}<br/>{c} (销量)",
+    formatter: "{b}<br/>{c} (热度)",
   },
   toolbox: {
     show: true,

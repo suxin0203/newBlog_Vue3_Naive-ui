@@ -1,8 +1,6 @@
 <template>
   <n-spin :show="loading">
-          <template #description>
-        正在处理数据中...
-      </template>
+    <template #description> 正在处理数据中... </template>
     <n-card id="main" loading="{{ loading }}">
       <n-grid x-gap="12" :cols="24" style="height: calc(100vh-40px)">
         <n-gi :span="6">
@@ -32,55 +30,27 @@
               <n-table :bordered="false" :single-line="false">
                 <thead>
                   <tr>
-                    <th>Abandon</th>
-                    <th>Abnormal</th>
-                    <th>Abolish</th>
-                    <th>...</th>
-                    <th>万事开头难</th>
+                    <th style="width: 80px">项目名称</th>
+                    <th>次数统计</th>
+                    <th>热门时间</th>
+                    <th>今日事件</th>
+                    <th>异常情况</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr>
-                    <td>放弃</td>
-                    <td>反常的</td>
-                    <td>彻底废除</td>
-                    <td>...</td>
-                    <td>干！我刚才背的是啥</td>
-                  </tr>
-                  <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                  </tr>
-                  <tr>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                    <td>...</td>
-                  </tr>
-                  <tr>
-                    <td>放弃</td>
-                    <td>反常的</td>
-                    <td>彻底废除</td>
-                    <td>...</td>
-                    <td>干！我刚才背的是啥</td>
-                  </tr>
-                  <tr>
-                    <td>放弃</td>
-                    <td>反常的</td>
-                    <td>彻底废除</td>
-                    <td>...</td>
-                    <td>干！我刚才背的是啥</td>
-                  </tr>
-                  <tr>
-                    <td>放弃</td>
-                    <td>反常的</td>
-                    <td>彻底废除</td>
-                    <td>...</td>
-                    <td>干！我刚才背的是啥</td>
+                  <tr v-for="item in data.data" :key="item.id">
+                    <td>{{ item.name }}</td>
+                    <td>
+                      <n-tooltip placement="top-center" :style="{ maxWidth: '600px' }">
+                        <template #trigger>
+                          <n-text>{{ item.content.slice(0, 180) }}...</n-text>
+                        </template>
+                        <div>{{ item.content }}</div>
+                      </n-tooltip>
+                      </td>
+                    <td>{{ item.created_at }}</td>
+                    <td>{{ item.remarks }}</td>
+                    <td>{{ !item.value }}</td>
                   </tr>
                 </tbody>
               </n-table>
@@ -246,6 +216,10 @@ onMounted(() => {
     height: 330px;
     overflow: auto;
     background-color: rgba(255, 255, 255, 0) !important;
+    // 隐藏滚动条
+    &::-webkit-scrollbar {
+      display: none;
+    }
     table {
       background-color: rgba(255, 255, 255, 0) !important;
     }

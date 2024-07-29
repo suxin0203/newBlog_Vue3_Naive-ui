@@ -244,7 +244,7 @@ let option = {
   ],
   series: [
     {
-      name: "每日数量",
+      name: "本周",
       type: "line",
       smooth: true, //是否平滑
       showAllSymbol: true,
@@ -277,7 +277,9 @@ let option = {
         shadowOffsetX: 2,
       },
       tooltip: {
-        show: false,
+        formatter (params) {
+          return `${params.name}：${params.data}`;
+        },
       },
       areaStyle: {
         // normal: {
@@ -305,7 +307,7 @@ let option = {
       data: [5,5,5,5,5,5,5],
     },
     {
-      name: "注册总量",
+      name: "上周",
       type: "line",
       smooth: true, //是否平滑
       showAllSymbol: true,
@@ -339,7 +341,8 @@ let option = {
         shadowOffsetX: 2,
       },
       tooltip: {
-        show: false,
+        formatter: "{b} <br/>{a} : {c}",
+
       },
       areaStyle: {
         // normal: {

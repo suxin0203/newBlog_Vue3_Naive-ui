@@ -96,11 +96,19 @@ let colorList = [
   "#FD866A",
   "#9E87FF",
   "#58D5FF",
+  "#FFD57A",
+  "#FFB36A",
+  "#FF866A",
+  "#FF9E87",
+  "#FF58D5",
+  "#FF73DD",
+  "#FF73AC",
+  "#FFD56A",
 ];
 
 let option = {
   title: {
-    text: "活动占比统计",
+    text: "活动参与度占比统计",
     x: "center",
     y: "center",
     textStyle: {

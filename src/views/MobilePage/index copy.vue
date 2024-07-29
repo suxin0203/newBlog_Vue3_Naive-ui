@@ -22,7 +22,7 @@
       </n-gi>
       <n-gi :span="6" class="form_list">
         <div class="green">
-          <h2>代抢填写(填错无效)</h2>
+          <h2>签到更新</h2>
           <n-form
             ref="formRef"
             :rules="rules1"
@@ -31,52 +31,26 @@
             label-width="auto"
             require-mark-placement="right-hanging"
           >
-            <n-form-item label="项目" path="name">
+            <n-form-item label="签到项目" path="selectValue">
               <n-select
                 v-model:value="model.name"
                 placeholder="Select"
                 :options="generalOptions"
               />
             </n-form-item>
-            <n-form-item label="Token（Qm-User-Token）" path="token">
+            <n-form-item label="更新账号（sid|账号备注）" path="inputValue">
               <n-input
-                v-model:value="model.token"
-                placeholder="例：IUZLN0ltKzx2dlOjoDo4AgwB1dQnsEyzVgczML"
+                v-model:value="model.content"
+                placeholder="例：YZ1262730072574754816YZRmKbwiZm|小旋风"
               />
             </n-form-item>
-            <n-form-item label="账号信息（timestamp）" path="timestamp">
-              <n-input
-                v-model:value="model.timestamp"
-                placeholder="例：1722050284170"
-                type="number"
-              />
-            </n-form-item>
-            <n-form-item label="账号信息（signature）" path="signature">
-              <n-input
-                v-model:value="model.signature"
-                placeholder="例：565524EE4DCE62D6BABC09958C6D4FE5"
-              />
-            </n-form-item>
-            <n-form-item label="账号信息（version）" path="version">
-              <n-input
-                v-model:value="model.version"
-                placeholder="例：38"
-                type="number"
-              />
-            </n-form-item>
-            <n-form-item label="账号信息（data）" path="data">
-              <n-input
-                v-model:value="model.data"
-                placeholder="例：MoLhdoWI6V5+Ppnt3lRYZeZGE6Ggd0tofG...="
-              />
-            </n-form-item>
-            <n-form-item label="留言" path="remarks">
+            <n-form-item label="留言" path="textareaValue">
               <n-input
                 v-model:value="model.remarks"
                 placeholder="如果有留言，请在这里输入"
                 type="textarea"
                 :autosize="{
-                  minRows: 2,
+                  minRows: 3,
                   maxRows: 5,
                 }"
               />
@@ -104,7 +78,7 @@
               </n-button>
             </div>
           </n-form>
-          <n-card title="提交记录" style="margin: 20px 0">
+          <n-card title="提交记录" style="margin: 50px 0">
             <p>无</p>
             <p v-for="log in commoitLog" :key="log.content">
               {{ log.data.content }}
@@ -116,7 +90,7 @@
         <div class="light-green">
           <n-flex>
             <n-form
-              ref="formRef1"
+              ref="formRef"
               inline
               label-placement="left"
               label-width="auto"
@@ -166,7 +140,6 @@
     </n-grid>
   </n-card>
   <n-float-button
-    v-if="false"
     position="absolute"
     type="primary"
     menu-trigger="hover"
@@ -248,38 +221,19 @@ const rules = {
 };
 
 let model = ref({
-  name: "",
+  name: "七点五矿泉水sign",
   content: "",
   remarks: "",
 });
 
 let generalOptions = ref([
-  { label: "霸王茶姬_代抢", value: "霸王茶姬_代抢" },
-  { label: "茉莉奶白_代抢", value: "茉莉奶白_代抢" },
-  { label: "沪上阿姨_代抢", value: "沪上阿姨_代抢" },
-  { label: "蜜雪冰城_代抢", value: "蜜雪冰城_代抢" },
-  { label: "七点五圣水sign", value: "七点五矿泉水sign", disabled: true },
-  { label: "霸王茶坤sign", value: "霸王茶坤sign", disabled: true },
+  { label: "七点五圣水", value: "七点五矿泉水sign" },
+  { label: "霸王茶坤", value: "霸王茶姬sign", disabled: true },
 ]);
 
 const rules1 = {
-  name: [{ required: true, message: "请选择活动项目", trigger: "blur" }],
-  // token必填且长度为64
-  token: [
-    { required: true, message: "请输入Token", trigger: "blur" },
-    { min: 64, max: 64, message: "请检查Token是否完整", trigger: "blur" },
-  ],
-  timestamp: [
-    { required: true, message: "请输入timestamp", trigger: "blur" },
-    { min: 13, max: 13, message: "请检查timestamp是否完整", trigger: "blur" },
-  ],
-  signature: [
-    { required: true, message: "请输入signature", trigger: "blur" },
-    { min: 32, max: 32, message: "请检查signature是否完整", trigger: "blur" },
-  ],
-  // version必须是数字
-  version: [{ required: true, message: "请输入version", trigger: "blur" }],
-  data: [{ required: true, message: "请输入data", trigger: "blur" }],
+  name: [{ required: false, message: "请输入活动名称", trigger: "blur" }],
+  token: [{ required: false, message: "请输入Token", trigger: "blur" }],
   content: [{ required: false, message: "请输入内容", trigger: "blur" }],
   remarks: [{ required: false, message: "请输入备注", trigger: "blur" }],
 };
@@ -322,41 +276,14 @@ const columns = [
 
 let commoitLog = ref([]);
 
-const addActivityfun = async (data) => {
-  let res = await addActivity(data);
-  commoitLog.value.push(res);
-  // 弹窗提示 message
-  message.info(res.message);
-  // 刷新列表
-  fetchActivityList();
-  // 重置表单
-  model.value = {
-    name: "",
-    token: "",
-    timestamp: "",
-    signature: "",
-    version: "",
-    data: "",
-    content: "",
-    remarks: "",
-  };
-};
-
-const handleValidateButtonClick = async () => {
-  // 校验表单
+const handleValidateButtonClick = () => {
   formRef.value.validate().then(async (valid) => {
-    console.log("valid", valid);
     if (valid) {
-      dialog.warning({
-        title: "提示",
-        content: `确认选择项目：[${model.value.name}]？`,
-        positiveText: "确定",
-        negativeText: "选错了",
-        onPositiveClick: () => {
-          model.value.content = `${model.value.timestamp}|${model.value.signature}|${model.value.version}|${model.value.data}`;
-          addActivityfun(model.value);
-        },
-      });
+      console.log("success", model.value);
+      let res = await addActivity(model.value);
+      commoitLog.value.push(res);
+      // 弹窗提示 message
+      message.info(res.message);
     } else {
       console.log("fail");
     }
@@ -391,29 +318,22 @@ onMounted(() => {
 }
 .green {
   height: calc(100% - 40px);
-  background-color: rgba(0, 128, 0, 0.05);
+  /* background-color: rgba(0, 128, 0, 0.24); */
   padding: 20px;
-  overflow-y: auto;
 }
 
 @media screen and (max-width: 600px) {
-  #main-card {
-    overflow-y: auto;
-    .main_body {
-      .menu_list {
-        display: none !important;
-      }
-      .form_list {
-        // display: block;
-        grid-column: span 24 / span 24 !important;
-        // width: 100vw;
-        .green {
-          overflow-y: auto;
-        }
-      }
-      .table_list {
-        display: none !important;
-      }
+  .main_body {
+    .menu_list {
+      display: none !important;
+    }
+    .form_list {
+      // display: block;
+      grid-column: span 24 / span 24 !important;
+      // width: 100vw;
+    }
+    .table_list {
+      display: none !important;
     }
   }
 }
