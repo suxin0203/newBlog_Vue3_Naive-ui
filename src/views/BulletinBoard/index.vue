@@ -60,7 +60,8 @@
         <n-gi :span="6">
           <div class="light-green">
             <n-flex align="center" justify="center" style="height: 100%">
-              <Pie :height="'30%'" :width="'100%'" :optionData="data" />
+              <!-- <Pie :height="'30%'" :width="'100%'" :optionData="data" /> -->
+              <Graph :height="'30%'" :width="'100%'" :optionData="data" />
               <Bar :height="'30%'" :width="'100%'" :optionData="data" />
               <Linear :height="'30%'" :width="'100%'" :optionData="data" />
             </n-flex>
@@ -79,9 +80,7 @@ import Linear from "@/views/BulletinBoard/components/Line.vue";
 import Bar from "@/views/BulletinBoard/components/Bar.vue";
 import Pie from "@/views/BulletinBoard/components/Pie.vue";
 import ChinaMap from "./components/ChinaMap.vue";
-import { create } from "naive-ui";
-import { Create } from "@vicons/ionicons5";
-import { omit } from "naive-ui/es/_utils";
+import Graph from "@/views/BulletinBoard/components/Graph.vue";
 // import MenuTest from "./components/MenuTest.vue";
 
 let loading = ref(false);

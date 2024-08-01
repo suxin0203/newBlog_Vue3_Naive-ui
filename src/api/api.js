@@ -292,3 +292,13 @@ export function getActivityListSign(params) {
     params
   })
 }
+
+// 获取蜜雪冰城type （临时）
+export function type1286(data) {
+  return request({
+    baseURL: 'https://script.suxin23.cn',
+    url: '/mxbc/type1286',
+    method: 'post',
+    data,
+  })
+}

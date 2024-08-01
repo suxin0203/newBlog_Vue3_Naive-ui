@@ -11,6 +11,11 @@ let routes = [
     component: () => import("@/views/MobilePage/index.vue"),
   },
   {
+    path: "/mxbc",
+    name: "mxbc",
+    component: () => import("@/views/Mxbc/index.vue"),
+  },
+  {
     path: "/show",
     name: "show",
     component: () => import("@/views/BulletinBoard/index.vue"),
