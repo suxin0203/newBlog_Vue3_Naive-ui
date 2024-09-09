@@ -285,6 +285,7 @@ const logout = () => {
   // delToken
   adminStore.delToken();
   console.log("退出登录");
+  window.location.reload();
 };
 // 获取音乐评论
 const getMusicComment = async () => {
