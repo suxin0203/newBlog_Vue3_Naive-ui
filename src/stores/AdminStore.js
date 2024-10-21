@@ -36,7 +36,7 @@ export const AdminStore = defineStore(STORE_NAME, {
             // 清除本地存储中的用户信息
             localStorage.removeItem(USERINFO_KEY);
             // 刷新页面
-            // window.location.reload();
+            window.location.reload();
         },
         // 获取用户信息
         getAdminInfo() {

@@ -268,6 +268,7 @@ export function deleteLinkById(id) {
 // 活动列表/activity/
 export function getActivityList(params) {
   return request({
+    timeout: 10000,
     url: '/activity/token/',
     method: 'get',
     params
