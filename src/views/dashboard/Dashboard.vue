@@ -247,12 +247,12 @@ const menuOptions = [
             RouterLink,
             {
               to: {
-                name: "sendmsg",
+                name: "leavemessage",
               },
             },
             { default: () => "词云图" }
           ),
-        key: "sendmsg",
+        key: "leavemessage",
         icon: renderIcon(CloseCircleOutline),
       },
     ],
@@ -324,8 +324,9 @@ const addArticle = () => {
   }
   .content {
     flex: 1;
-    overflow: auto;
+    overflow-y: auto;
     box-sizing: border-box;
+    height: calc(100vh - 150px);
   }
 }
 

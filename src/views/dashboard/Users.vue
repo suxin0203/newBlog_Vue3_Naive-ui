@@ -9,7 +9,7 @@
     >
       添加用户
     </n-button>
-    <n-table :bordered="false" :single-line="false">
+    <n-table :bordered="false" :single-line="false" class="user-table">
       <thead>
         <tr>
           <th>编号</th>
@@ -232,4 +232,8 @@ const deleteUser = async (category) => {
 };
 </script>
 
-<style lang="less" scoped></style>
+<style lang="less" scoped>
+// .user-table{
+//   height: 500px;
+// }
+</style>

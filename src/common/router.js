@@ -11,7 +11,7 @@ let routes = [
     component: () => import("@/views/MobilePage/index.vue"),
   },
   {
-    path: "/mxbc",
+    path: "/activity/mxbc",
     name: "mxbc",
     component: () => import("@/views/Mxbc/index.vue"),
   },
@@ -26,8 +26,8 @@ let routes = [
     component: () => import("@/views/ActivityTbale/index.vue"),
   },
   {
-    path: "/sendmsg",
-    name: "sendmsg",
+    path: "/leavemessage",
+    name: "leavemessage",
     component: () => import("@/views/Sendmsg.vue"),
   },
   {

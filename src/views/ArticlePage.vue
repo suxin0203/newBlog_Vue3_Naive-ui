@@ -178,7 +178,7 @@ const gohome = () => {
 };
 
 const toMsg = () => {
-  router.push("/sendmsg"); //跳转到留言页面
+  router.push("/leavemessage"); //跳转到留言页面
 };
 
 const tologin = () => {

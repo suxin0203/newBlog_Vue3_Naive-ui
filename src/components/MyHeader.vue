@@ -129,7 +129,7 @@ const toAboutMe = (blog) => {
 };
 
 const toMessage = (blog) => {
-  router.push("/sendmsg"); //跳转到留言
+  router.push("/leavemessage"); //跳转到留言
 };
 
 const toHome = (blog) => {
