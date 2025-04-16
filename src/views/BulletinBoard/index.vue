@@ -90,8 +90,8 @@ const formValue = ref({
   token: "",
   content: "",
   remarks: "",
-  limit: 3000,
-  page: 1,
+  limit: 1000,
+  page: 6,
 });
 
 let titleCounts = ref([
@@ -101,19 +101,19 @@ let titleCounts = ref([
   },
   {
     title: "总次数",
-    count: 382,
+    count: 5357,
   },
   {
     title: "参与人数",
-    count: 261,
+    count: 986,
   },
   {
     title: "参与城市",
-    count: 26,
+    count: 59,
   },
   {
     title: "今日事件",
-    count: 5,
+    count: 26,
   },
 ]);
 

@@ -29,22 +29,32 @@
                 <n-input
                   v-model:value="formValue.name"
                   placeholder="输入活动名称"
+                  @change="serchData()"
                 />
               </n-form-item>
               <n-form-item label="Token" path="token">
                 <n-input
                   v-model:value="formValue.token"
                   placeholder="输入Token"
+                  @change="serchData()"
                 />
               </n-form-item>
               <n-form-item label="内容" path="content">
-                <n-input v-model:value="formValue.content" placeholder="内容" />
+                <n-input
+                  v-model:value="formValue.content"
+                  placeholder="内容"
+                  @change="serchData()"
+                />
               </n-form-item>
               <n-form-item label="备注" path="remarks">
-                <n-input v-model:value="formValue.remarks" placeholder="备注" />
+                <n-input
+                  v-model:value="formValue.remarks"
+                  placeholder="备注"
+                  @change="serchData()"
+                />
               </n-form-item>
               <n-form-item>
-                <n-button attr-type="button" @click="fetchActivityList">
+                <n-button attr-type="button" @click="serchData()">
                   搜索
                 </n-button>
               </n-form-item>
@@ -83,7 +93,7 @@ const formValue = ref({
   token: "",
   content: "",
   remarks: "",
-  limit: 50,
+  limit: 100,
   page: 1,
 });
 
@@ -91,10 +101,10 @@ let loading = ref(false);
 
 const pagination = reactive({
   page: 1,
-  pageSize: 50,
+  pageSize: 100,
   itemCount: 0,
   showSizePicker: true,
-  pageSizes: [10, 20, 30, 40, 50],
+  pageSizes: [10, 20, 30, 50, 100],
   onChange: (page) => {
     pagination.page = page;
     formValue.value.page = page;
@@ -131,13 +141,13 @@ const columns = [
     width: "400px",
     resizable: true,
     //
-    ellipsis: { tooltip: { placement: "top", "width": "40vw" } },
+    ellipsis: { tooltip: { placement: "top", width: "40vw" } },
   },
   {
     title: "内容",
     key: "content",
     resizable: true,
-    ellipsis: { tooltip: { placement: "top", "width": "30vw" } },
+    ellipsis: { tooltip: { placement: "top", width: "30vw" } },
     expandable: true,
   },
   { title: "时间", key: "created_at", width: "200px" },
@@ -151,6 +161,12 @@ const columns = [
   { title: "值", key: "value", width: "50px", align: "center" },
   // { title: "操作", key: "action", width: "100px", align: "center" },
 ];
+
+const serchData = () => {
+  pagination.page = 1;
+  formValue.value.page = 1;
+  fetchActivityList();
+};
 
 const fetchActivityList = async () => {
   loading.value = true;
