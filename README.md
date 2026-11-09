@@ -1,18 +1,18 @@
 # 基于vue3+Naive UI的极简博客
 
-> **仓库定位（2026-10-14 补）**
+> **⚠️ 本仓库已废弃（2026-11-10）**
 >
-> 这是博客系统的**旧版前端**，目前**仍在线上服务** [blog.suxin23.cn](http://blog.suxin23.cn)，所以仓库保留、不删除、也不再迭代。
+> 这是博客系统的**旧版前端，已废弃下线**，本仓库仅作历史归档保留，不再迭代。
 >
-> - 配套后端：[BlogServes_Express_Mysql](https://github.com/suxin0203/BlogServes_Express_Mysql)（线上 `api.suxin23.cn`）
-> - 配套小程序：[blog-vx-app](https://github.com/suxin0203/blog-vx-app)（uni-app 旧版）
-> - 后继版本：[blog-bishe](https://github.com/suxin0203/blog-bishe) 的 `Vue3/` 目录（毕业设计「文栈博客」，线上 `wzblog.suxin23.cn`）
+> - **`blog.suxin23.cn` 已切换到新版博客**（后端 [wzblog-api](https://github.com/suxin0203/wzblog-api) + Vue 3 新前端，线上 <https://blog.suxin23.cn>）——请以新版为准，本仓库的域名描述已过时
+> - 旧版配套：后端 [BlogServes_Express_Mysql](https://github.com/suxin0203/BlogServes_Express_Mysql)（`api.suxin23.cn`，退役中）、小程序 [blog-vx-app](https://github.com/suxin0203/blog-vx-app)（uni-app 旧版）
+> - 后继版本：[blog-bishe](https://github.com/suxin0203/blog-bishe) 的 `Vue3/` 目录（毕业设计「文栈博客」的起点）
 >
-> 本仓库与后继版本同源但已全面分叉：49 个源文件里 47 个路径被带走，内容无一字节相同。改这里不会影响线上旧站以外的任何东西。
+> 本仓库与后继版本同源但已全面分叉：49 个源文件里 47 个路径被带走，内容无一字节相同。改这里不影响线上任何服务。
 
-- ### 预览地址：~~http://162.14.73.22:7030~~（旧服务器端口，已停用） [Suxin's blog](http://blog.suxin23.cn)
+- ### 预览地址：~~http://162.14.73.22:7030~~（旧服务器端口，已停用）~~http://blog.suxin23.cn~~（已切换新版博客）
 
-- ### 预览接口：~~http://162.14.73.22:7031~~（旧服务器端口，已停用） [api接口](https://api.suxin23.cn)
+- ### 预览接口：~~http://162.14.73.22:7031~~（旧服务器端口，已停用）~~api.suxin23.cn~~（退役中）
 
 ## 后端是nodejs（express）
 
